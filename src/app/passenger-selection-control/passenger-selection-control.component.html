@@ -1,0 +1,118 @@
+<div class="passengers">
+    <h6>Passengers</h6>
+    <div class="passengers-types">
+        <div
+            class="passengers-type">
+            <div class="text">
+                <span
+                    class="count pcount">{{passenger.adult}}</span>
+                <div
+                    class="type-label">
+                    <p>Adult</p>
+                    <span>12+
+                        yrs</span>
+                </div>
+            </div>
+            <div
+                class="button-set">
+                <button 
+                    type="button"
+                    class="btn-add" (click)="incrementPassengers('adult',$event)" (mousedown)="stopEventProp($event)">
+                    <i
+                        class="fas fa-plus"></i>
+                </button>
+                <button
+                    type="button"
+                    class="btn-subtract" (click)="decrementPassengers('adult',$event)" (mousedown)="stopEventProp($event)">
+                    <i
+                        class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="passengers-type">
+            <div class="text">
+                <span
+                    class="count ccount">{{passenger.childeren}}</span>
+                <div
+                    class="type-label">
+                    <p
+                        class="fz14 mb-xs-0">
+                        Children
+                    </p><span>2
+                        - Less
+                        than 12
+                        yrs</span>
+                </div>
+            </div>
+            <div
+                class="button-set">
+                <button
+                    type="button"
+                    class="btn-add-c" (click)="incrementPassengers('childeren',$event)">
+                    <i
+                        class="fas fa-plus"></i>
+                </button>
+                <button
+                    type="button"
+                    class="btn-subtract-c" (click)="decrementPassengers('childeren',$event)">
+                    <i
+                        class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="passengers-type">
+            <div class="text">
+                <span
+                    class="count incount">{{passenger.infant}}</span>
+                <div
+                    class="type-label">
+                    <p
+                        class="fz14 mb-xs-0">
+                        Infant
+                    </p><span>Less
+                        than 2
+                        yrs</span>
+                </div>
+            </div>
+            <div
+                class="button-set">
+                <button
+                    type="button"
+                    class="btn-add-in" (click)="incrementPassengers('infant',$event)">
+                    <i
+                        class="fas fa-plus"></i>
+                </button>
+                <button
+                    type="button"
+                    class="btn-subtract-in" (click)="decrementPassengers('infant',$event)">
+                    <i
+                        class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cabin-selection" >
+    <h6>Cabin Class</h6>
+    <div class="cabin-list">
+        <button type="button"
+            class="label-select-btn" [ngClass]="{'active':passenger.cabinClass=='e'}" (click)="passenger.cabinClass='e';passenger.cabinClassFull='Economy';onClickCabin('ECONOMY');stopEventProp($event)">
+            <span
+                class="muiButton-label">Economy
+            </span>
+        </button>
+        <button type="button"
+            class="label-select-btn" [ngClass]="{'active':passenger.cabinClass=='b'}" (click)="passenger.cabinClass='b';passenger.cabinClassFull='Business';onClickCabin('BUSINESS');stopEventProp($event)">
+            <span
+                class="muiButton-label">
+                Business
+            </span>
+        </button>
+        <button type="button"
+            class="label-select-btn" [ngClass]="{'active':passenger.cabinClass=='f'}" (click)="passenger.cabinClass='f';passenger.cabinClassFull='First Class';onClickCabin('FIRST');stopEventProp($event)">
+            <span
+                class="MuiButton-label">First
+                Class </span>
+        </button>
+    </div>
+</div>

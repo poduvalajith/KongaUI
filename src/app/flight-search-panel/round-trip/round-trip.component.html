@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="oneway_search_form">
+            <form action="#!">
+                <div class="row">
+                    <div class="col-lg-3  col-md-6 col-sm-12 col-12">
+                        <div class="flight_Search_boxed" appautocompletecity label="From" (fromClicked)="fromClicked($event,'from')" icon="fa-plane-departure">
+                          
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-md-6 col-sm-12 col-12">
+                        <div class="flight_Search_boxed" appautocompletecity label="To" (fromClicked)="fromClicked($event,'to')" icon="fa-plane-arrival" showDirectionIcon="true">
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-12">
+                        <div class="form_search_date">
+                            <div class="flight_Search_boxed date_flex_area">
+                                <div class="Journey_date">
+                                    <p>Journey date</p>
+                                    <input type="date" id="fromdate" [value]="current_date"  (change)="setJourneyDate($event)" [min]="current_date" >
+                                    <span>{{journeyDate_selected | date:'fullDate'}}</span>
+                                </div>
+                                <div class="Journey_date">
+                                    <p>Return date</p>
+                                    <input type="date" id="datereturn" (change)="setReturnDate($event)"  [value]="journeyDate_selected" [min]="journeyDate_selected" >
+                                    <span>{{journeyDate_selected | date:'fullDate'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2  col-md-6 col-sm-12 col-12">
+                        <div
+                            class="flight_Search_boxed dropdown_passenger_area">
+                            <p>Passenger, Class </p>
+                            <div class="dropdown">
+                                <button class="dropdown-toggle final-count"
+                                    data-toggle="dropdown" type="button"
+                                    id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{totalPassengerCount}} Passenger
+                                </button>
+                                <div class="dropdown-menu dropdown_passenger_info"
+                                    aria-labelledby="dropdownMenuButton1">
+                                    <div class="traveller-calulate-persons" appPassengerSelectionControl  (passengerChange)="passengerChange($event)" (cabinChange)="cabinChange($event)">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <span>{{cabinRestriction[0].cabin}}</span> 
+                        </div>
+                    </div>
+                </div>
+                <div class="top_form_search_button">
+                    <button class="btn btn_theme btn_md" (click)="search()">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

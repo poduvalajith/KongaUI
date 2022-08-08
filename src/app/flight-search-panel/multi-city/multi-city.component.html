@@ -1,0 +1,211 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="oneway_search_form">
+            <form action="#!">
+                <div class="multi_city_form_wrapper">
+                    <div class="multi_city_form">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                <div class="flight_Search_boxed" appautocompletecity label="From" icon="fa-plane-departure">
+                                   
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                <div class="flight_Search_boxed" appautocompletecity label="To" icon="fa-plane-arrival" showDirectionIcon="true">
+                                   
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+                                <div class="form_search_date">
+                                    <div
+                                        class="flight_Search_boxed date_flex_area">
+                                        <div class="Journey_date">
+                                            <p>Journey date</p>
+                                            <input type="date"
+                                            [value]="current_date">
+                                            <span>Thursday</span>
+                                        </div>
+                                        <div class="Journey_date">
+                                            <p>Return date</p>
+                                            <input type="date"
+                                            [value]="current_date">
+                                            <span>Saturday</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2  col-md-6 col-sm-12 col-12">
+                                <div
+                                    class="flight_Search_boxed dropdown_passenger_area">
+                                    <p>Passenger, Class </p>
+                                    <div class="dropdown">
+                                        <button
+                                            class="dropdown-toggle final-count"
+                                            data-toggle="dropdown" type="button"
+                                            id="dropdownMenuButton1"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            {{flight1_details.passenger_detail?flight1_details.passenger_detail.total:0}} Passenger
+                                        </button>
+                                        <div class="dropdown-menu dropdown_passenger_info"
+                                            aria-labelledby="dropdownMenuButton1">
+                                            <div
+                                                class="traveller-calulate-persons" appPassengerSelectionControl (passengerChange)="flight1_details.passenger_detail=$event;">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span>{{flight1_details.passenger_detail?flight1_details.passenger_detail.cabinClassFull:'-'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="multi_city_form">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                <div class="flight_Search_boxed" appautocompletecity label="From" icon="fa-plane-departure">
+                                    
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                <div class="flight_Search_boxed" appautocompletecity label="To" icon="fa-plane-arrival" showDirectionIcon="true">
+                                  
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+                                <div class="form_search_date">
+                                    <div
+                                        class="flight_Search_boxed date_flex_area">
+                                        <div class="Journey_date">
+                                            <p>Journey date</p>
+                                            <input type="date"
+                                            [value]="current_date">
+                                            <span>Thursday</span>
+                                        </div>
+                                        <div class="Journey_date">
+                                            <p>Return date</p>
+                                            <input type="date"
+                                            [value]="current_date">
+                                            <span>Saturday</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2  col-md-6 col-sm-12 col-12">
+                                <div
+                                    class="flight_Search_boxed dropdown_passenger_area">
+                                    <p>Passenger, Class </p>
+                                    <div class="dropdown">
+                                        <button
+                                            class="dropdown-toggle final-count"
+                                            data-toggle="dropdown" type="button"
+                                            id="dropdownMenuButton1"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            {{flight2_details.passenger_detail?flight2_details.passenger_detail.total:0}} Passenger
+                                        </button>
+                                        <div class="dropdown-menu dropdown_passenger_info"
+                                            aria-labelledby="dropdownMenuButton1">
+                                            <div
+                                                class="traveller-calulate-persons" appPassengerSelectionControl (passengerChange)="flight2_details.passenger_detail=$event;">
+                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span>{{flight2_details.passenger_detail?flight2_details.passenger_detail.cabinClassFull:'-'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <!--More City Flights Start-->
+                    <ng-container *ngFor="let flight of multi_city_flight_list;let i=index;">
+                        <div class="multi_city_form">
+                            <div class="col-lg-12">
+                                <div class="multi_form_remove">
+                                    <button type="button" id="remove_multi_city" (click)="removeFlight(i)">Remove</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                    <div class="flight_Search_boxed"  appautocompletecity label="From" icon="fa-plane-departure">
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                    <div class="flight_Search_boxed"  appautocompletecity label="To" icon="fa-plane-arrival" showDirectionIcon="true">
+                                        <p>To</p>
+                                        <input type="text" value="London ">
+                                        <span>LCY, London city airport </span>
+                                        <div class="plan_icon_posation">
+                                            <i class="fas fa-plane-arrival"></i>
+                                        </div>
+                                        <div class="range_plan">
+                                            <i class="fas "></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+                                    <div class="form_search_date">
+                                        <div
+                                            class="flight_Search_boxed date_flex_area">
+                                            <div class="Journey_date">
+                                                <p>Journey date</p>
+                                                <input type="date"
+                                                [value]="current_date">
+                                                <span>Thursday</span>
+                                            </div>
+                                            <div class="Journey_date">
+                                                <p>Return date</p>
+                                                <input type="date"
+                                                [value]="current_date">
+                                                <span>Saturday</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2  col-md-6 col-sm-12 col-12">
+                                    <div
+                                        class="flight_Search_boxed dropdown_passenger_area">
+                                        <p>Passenger, Class </p>
+                                        <div class="dropdown">
+                                            <button
+                                                class="dropdown-toggle final-count"
+                                                data-toggle="dropdown" type="button"
+                                                id="dropdownMenuButton1"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                {{flight.flight_details.passenger_detail?flight.flight_details.passenger_detail.total:0}} Passenger
+                                            </button>
+                                            <div class="dropdown-menu dropdown_passenger_info"
+                                                aria-labelledby="dropdownMenuButton1">
+                                                <div
+                                                    class="traveller-calulate-persons" appPassengerSelectionControl (passengerChange)="flight.flight_details.passenger_detail=$event;">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span>{{flight.flight_details.passenger_detail?flight.flight_details.passenger_detail.cabinClassFull:'-'}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!--More City Flights End-->
+                </div>
+               
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="add_multy_form">
+                            <button type="button" id="addMulticityRow" (click)="addAnotherFlight()">+ Add
+                                another
+                                flight</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="top_form_search_button">
+                    <button class="btn btn_theme btn_md">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

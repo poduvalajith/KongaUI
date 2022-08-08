@@ -1,0 +1,19 @@
+<p>{{_control_label}}</p>
+<input type="text"
+(selectItem)="setModel($event)" 
+(keyup)="onKey($event)"
+[ngbTypeahead]="search"
+[resultTemplate]="rt"
+[inputFormatter]="formatter">
+<span>{{selected_flight && selected_flight.CityName?selected_flight.CityName:'-'}}</span>
+<div class="plan_icon_posation">
+    <i class="fas" [class]="_control_icon"></i>
+</div>
+<div class="range_plan" *ngIf="showDirectionIcon">
+    <i class="fas fa-exchange-alt"></i>
+</div>
+<ng-template #rt let-r="result" let-t="term">
+    <!-- <img [src]="'https://upload.wikimedia.org/wikipedia/commons/thumb/' + r['flag']" class="me-1" style="width: 16px"> -->
+    <!-- <ngb-highlight [result]="r.CityName" [term]="t"></ngb-highlight> -->
+    <span style="font-size: 1rem;"> {{r.CityName}}</span>
+</ng-template>
