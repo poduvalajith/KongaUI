@@ -7,10 +7,10 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="common_bannner_text">
-                    <h2>Flight search result</h2>
+                    <h2>Flight Search</h2>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><span><i class="fas fa-circle"></i></span> Flight search result</li>
+                        <li><a href="">Home</a></li>
+                        <!-- <li><span><i class="fas fa-circle"></i></span> Flight search result</li> -->
                     </ul>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                                                     aria-controls="roundtrip"
                                                     [attr.aria-selected]="activeTab===2?true:false"
                                                     [ngClass]="{'active':activeTab===2}"
-                                                    (click)="toogleTab(2)">Roundtrip</button>
+                                                    (click)="toogleTab(2)">Round Trip</button>
                                             </li>
                                             <!-- <li class="nav-item" role="presentation">
                                                 <button class="nav-link" id="multi_city-tab" data-bs-toggle="tab"
@@ -107,14 +107,14 @@
                     </div> -->
                     <div class="left_side_search_boxed">
                         <div class="left_side_search_heading">
-                            <h5>Number of stops</h5>
+                            <h5>Number Of Stops</h5>
                         </div>
                         <div class="tour_search_type">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultf1" [(ngModel)]="isCheckedOneStop" >
                                 <label class="form-check-label" for="flexCheckDefaultf1">
                                     <span class="area_flex_one">
-                                        <span>1 stop</span>
+                                        <span>1 Stop</span>
                                     </span>
                                 </label>
                             </div>
@@ -122,7 +122,7 @@
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultf2"  [(ngModel)]="isCheckedTwoStop" >
                                 <label class="form-check-label" for="flexCheckDefaultf2">
                                     <span class="area_flex_one">
-                                        <span>2 stop</span>
+                                        <span>2 Stop</span>
                                     </span>
                                 </label>
                             </div>
@@ -130,7 +130,7 @@
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultf3"  [(ngModel)]="isCheckedThreeStop" >
                                 <label class="form-check-label" for="flexCheckDefaultf3">
                                     <span class="area_flex_one">
-                                        <span>3 stop</span>
+                                        <span>3 Stop</span>
                                     </span>
                                 </label>
                             </div>
@@ -138,7 +138,7 @@
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultf4"  [(ngModel)]="isCheckedNonStop" >
                                 <label class="form-check-label" for="flexCheckDefaultf4">
                                     <span class="area_flex_one">
-                                        <span>Non-stop</span>
+                                        <span>Non-Stop</span>
                                     </span>
                                 </label>
                             </div>
@@ -758,7 +758,7 @@
                                  <!--NON STOP -->
                                 <div class="flight_search_item_wrappper" *ngSwitchCase="1" >
 
-                                    <div class="flight_search_items"  *ngIf="isCheckedNonStop==true">
+                                    <div class="flight_search_items"  *ngIf="isCheckedNonStop==true && flight.isShow==true">
                                         <div class="multi_city_flight_lists" *ngFor="let itinery of flight.itineraries;">
                                             <div class="flight_multis_area_wrapper" >
                                                 <div class="flight_search_left">
@@ -804,7 +804,7 @@
                                                     class="fas fa-chevron-down"></i></h6>
                                         </div>
                                     </div>
-                                    <div class="flight_policy_refund collapse" [attr.id]="'collapseExample'+i" *ngIf="isCheckedNonStop==true">
+                                    <div class="flight_policy_refund collapse" [attr.id]="'collapseExample'+i" *ngIf="isCheckedNonStop==true && flight.isShow==true">
                                         <div *ngFor="let itinery of flight.itineraries;">
                                             <div class="flight_show_down_wrapper" *ngFor="let segment of itinery.segments;let i=index;">
                                                 <div class="flight-shoe_dow_item">
@@ -890,7 +890,7 @@
                                 
                                 <!--ONE STOP -->
                                 <div class="flight_search_item_wrappper" *ngSwitchCase="2" >
-                                    <div class="flight_search_items"  *ngIf="isCheckedOneStop==true">
+                                    <div class="flight_search_items"  *ngIf="isCheckedOneStop==true && flight.isShow==true">
                                         <div class="multi_city_flight_lists" *ngFor="let itinery of flight.itineraries;let itindex=index;">
                                             <div class="flight_multis_area_wrapper">
                                                 <div class="flight_search_left">
@@ -947,7 +947,7 @@
                                                     class="fas fa-chevron-down"></i></h6>
                                         </div>
                                     </div>
-                                    <div class="flight_policy_refund collapse" [attr.id]="'collapseExample'+i"  *ngIf="isCheckedOneStop==true">
+                                    <div class="flight_policy_refund collapse" [attr.id]="'collapseExample'+i"  *ngIf="isCheckedOneStop==true && flight.isShow==true">
                                         <div *ngFor="let itinery of flight.itineraries;">
                                             <div class="flight_show_down_wrapper" *ngFor="let segment of itinery.segments;let i=index;">
                                                 <div class="flight-shoe_dow_item">
@@ -1033,7 +1033,7 @@
                                 <!--TWO STOP -->
                                 <div *ngIf="flight.itineraries[0].segments[2] != undefined">
                                     <div class="flight_search_item_wrappper" *ngSwitchCase="3" >
-                                        <div class="flight_search_items"  *ngIf="isCheckedTwoStop==true">
+                                        <div class="flight_search_items"  *ngIf="isCheckedTwoStop==true && flight.isShow==true">
                                             <div class="multi_city_flight_lists" *ngFor="let itinery of flight.itineraries;let itindex=index;">
                                                 <div class="flight_multis_area_wrapper">
                                                     <div class="flight_search_left">
@@ -1093,15 +1093,34 @@
                                                         class="fas fa-chevron-down"></i></h6>
                                             </div>
                                         </div>
-                                        <div class="flight_policy_refund collapse" [attr.id]="'collapseExample'+i"  *ngIf="isCheckedTwoStop==true">
+                                        <div class="flight_policy_refund collapse" [attr.id]="'collapseExample'+i"  *ngIf="isCheckedTwoStop==true && flight.isShow==true">
                                             <div *ngFor="let itinery of flight.itineraries;let itindex=index;">
                                                 <div class="flight_show_down_wrapper" *ngFor="let segment of itinery.segments;let i=index;">
                                                     <div class="flight-shoe_dow_item">
                                                         <div class="airline-details">
                                                             <div class="img"><img src="{{imgbaseurl}}{{segment.carrierCode}}.gif" alt="img"></div>
-                                                            <span class="airlineName fw-500">Biman Bangladesh Airlines &nbsp;
-                                                                {{segment.carrierCode}} {{segment.number}}</span>
-                                                            <span class="flightNumber">BOEING 737-800 - 738</span>
+                                                            <span *ngFor="let dict of resultDataList.dictionaries | keyvalue">
+                                                                <span *ngIf="dict.key=='carriers'">
+                                                                    <span *ngFor="let carrier of dict.value | keyvalue">
+                                                                        <span *ngIf="carrier.key==segment.carrierCode">
+                                                                            <span class="airlineName fw-500">{{carrier.value}} &nbsp;
+                                                                                {{segment.carrierCode}} {{segment.number}}</span>
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                              </span>
+                                                              <span *ngFor="let dict of resultDataList.dictionaries | keyvalue">
+                                                                <span *ngIf="dict.key=='aircraft'">
+                                                                    <span *ngFor="let aircraft of dict.value | keyvalue">
+                                                                        <span *ngIf="aircraft.key==segment.aircraft.code">
+                                                                            <span class="airlineName fw-500">{{aircraft.value}}</span>
+                                                                        </span>
+        
+                                                                    </span>
+        
+                                                                </span>
+        
+                                                              </span>
                                                         </div>
                                                         <div class="flight_inner_show_component">
                                                             <div class="flight_det_wrapper">
@@ -1186,7 +1205,7 @@
                 <div class="col-lg-8">
                     <div class="tou_booking_form_Wrapper">
                         <div class="booking_tour_form">
-                            <h3 class="heading_theme">Passenger information</h3>
+                            <h3 class="heading_theme">Passenger Information</h3>
                            
                             <!-- Adult Loop Start -->
                             <div class="tour_booking_form_box margin_al" *ngIf="adultCount>0">
@@ -3301,21 +3320,22 @@
                                         <div class="flight_search_destination_sidebar">
                                             <p>From</p>
                                             <h3>{{segment2.departure.iataCode}}</h3>
-                                            <h6>{{segment2.carrierCode}}</h6>
-                                            <h6>{{segment2.aircraft.code}}</h6>
+                                            <h6>{{segment2.carrierCode}} {{segment2.aircraft.code}}</h6>
+                                            <!-- <h6>{{segment2.aircraft.code}}</h6> -->
                                         </div>
                                     </div>
                                     <div class="flight_search_middel_sidebar">
                                         <div class="flight_right_arrow_sidebar">
-                                            <img src="assets/img/icon/right_arrow.png" alt="icon">
+                                            <!-- <img src="assets/img/icon/right_arrow.png" alt="icon"> -->
+                                            <i class="bi bi-arrow-right"></i>
                                             <p>{{segment2.duration}}</p>
                                             
                                         </div>
                                         <div class="flight_search_destination_sidebar sidebr-ag">
                                             <p>To</p>
                                             <h3>{{segment2.arrival.iataCode}} </h3>
-                                            <h6>{{segment2.carrierCode}}</h6>
-                                            <h6>{{segment2.aircraft.code}}</h6>
+                                            <h6>{{segment2.carrierCode}} {{segment2.aircraft.code}}</h6>
+                                            <!-- <h6>{{segment2.aircraft.code}}</h6> -->
                                         </div>
                                     </div>
                                 </div>
@@ -3490,7 +3510,7 @@
                         </div>
                     </div>
                     <div class="booking_tour_form">
-                        <h3 class="heading_theme">Your information</h3>
+                        <h3 class="heading_theme">Your Information</h3>
                         <div class="tour_booking_form_box margin_al" *ngFor="let traveler of flightorderResponse.data.travelers;let i=index;">
                             <div class="your_info_arae">
                                 <ul>
@@ -3515,12 +3535,12 @@
                             </div>
                             <div class="tour_booking_amount_area">
                                 <ul>
-                                    <li>Booking Date: <span>{{flightorderResponse.data.associatedRecords[0].creationDate}}</span></li>
-                                    <li>Booking Reference: <span>{{flightorderResponse.data.associatedRecords[0].reference}}</span></li>
-                                    <li>Ticket status: <span>Pending</span></li>
+                                    <li>Booking Date <span>{{flightorderResponse.data.associatedRecords[0].formatedcreationDate}}</span></li>
+                                    <li>Booking Reference <span>{{flightorderResponse.data.associatedRecords[0].reference}}</span></li>
+                                    <li>Ticket status <span>Pending</span></li>
                                 </ul>
                                 <div class="total_subtotal_booking">
-                                    <h6 class="remove_coupon_tour">Total Amount <span>{{flightorderResponse.data.flightOffers[0].price.grandTotal}}</span> </h6>
+                                    <h6 class="remove_coupon_tour">Total Amount <span>{{flightorderResponse.data.flightOffers[0].price.currency}}  {{flightorderResponse.data.flightOffers[0].price.grandTotal}}</span> </h6>
                                 </div>
                             </div>
                         </div>
