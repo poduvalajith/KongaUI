@@ -34,6 +34,7 @@ export class AssociatedRecord
     public  creationDate! : string;
     public originSystemCode! : string;
     public flightOfferId! : string;
+    public formatedcreationDate!:string;
 }
 
 export class FlightOrdersResponseCo2Emission

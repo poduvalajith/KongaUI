@@ -8,8 +8,10 @@ import { FlightOrdersRequest } from '../Models/FlightOrdersRequest';
 @Injectable({
   providedIn: 'root'
 })
-export class FlightSearchApiService {
+export class FlightSearchApiService {   
 
+
+  // readonly flightsearchurl = "http://demo.konga.com:3000/";
   readonly flightsearchurl = "https://localhost:44317/";
 
   constructor(private http:HttpClient) { }
