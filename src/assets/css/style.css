@@ -382,7 +382,7 @@ section {
 
 .btn_sm {
     font-size: 14px;
-    padding: 5px 18px;
+    padding: 4px 30px;
 }
 
 .btn_navber {
@@ -3441,10 +3441,11 @@ textarea {
 .flight_search_items {
     background: #FFFFFF;
     border: 1px solid #DDDDDD;
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width:104%;
 }
 
 .flight_search_item_wrappper {
@@ -3506,6 +3507,15 @@ textarea {
 .flight_multi_airport_seprator_panel{
     cursor: pointer;
 }
+
+.flight_multi_airport_seperator_oneway{
+    height: 17px;
+    min-width: 334px;
+    position: relative;
+    text-align: center;
+}
+
+
 .flight_multi_airport_seperator{
     height: 17px;
     min-width: 60px;
@@ -3524,6 +3534,22 @@ textarea {
     bottom: 0;
     z-index: 1;
 }
+
+.flight_multi_airport_seperator_line_oneway{
+    border-top: 4px solid var(--main-color);
+    width: 330px;
+    max-width: 329px;
+    min-width: 60px;
+    height: 2px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 7px;
+    bottom: 0;
+    z-index: 1;
+}
+
 .flight_multi_airport_seperator_dot{
     width: 11px;
     height: 11px;
@@ -3573,6 +3599,7 @@ textarea {
 .flight_search_right {
     background: var(--main-color-contras);
     padding: 25px 16px 20px 25px;
+    border-radius: 10PX;
 }
 
 .flight_search_right h5 {
@@ -3609,6 +3636,8 @@ textarea {
     font-weight: 500;
     padding-top: 7px;
     cursor: pointer;
+    padding-bottom: 6px;
+    padding-top: 10px;
 }
 
 .load_more_flight {
@@ -3628,6 +3657,7 @@ textarea {
     border: 1px solid #d7d6d6;
     border-radius: 10px;
     padding: 0px 20px;
+    width: 104%;
 }
 
 .airline-details {

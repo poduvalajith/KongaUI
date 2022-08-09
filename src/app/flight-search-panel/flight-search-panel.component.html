@@ -231,6 +231,8 @@
                 </div>
             </div>
             <!--Filters End-->
+
+
             <!--Flights Info One Way-->
             <div class="col-lg-9" *ngIf="activeTab==1">
                 <div class="row">
@@ -281,7 +283,7 @@
     
                                         </div>
                                         <div class="flight_search_right">
-                                            <h6>{{flight.price.currency}} : {{flight.price.total}}</h6>
+                                            <h6>{{flight.price.currency}}   {{flight.price.total}}</h6>
                                             
                                             <button class="btn btn_theme btn_sm" (click)="OnClickBookNow(flight)">Book now</button>
                                             <h6 data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseExample'+i" 
@@ -369,7 +371,7 @@
                                         
                                     </div>
                                 </div>
-                                <!--Multiple Airports In Between -->
+                                <!--ONE STOP -->
                                 <div class="flight_search_item_wrappper" *ngSwitchCase="2" >
                                     <div class="flight_search_items"  *ngIf="isCheckedOneStop==true && flight.isShow==true">
                                         <div class="multi_city_flight_lists">
@@ -394,8 +396,8 @@
                                                 <div class="flight_search_middel">
                                                     <!-- (mouseenter)="p.open(flight)" (mouseleave)="p.close()" -->
                                                     <div class="flight_multi_airport_seprator_panel">
-                                                        <div class="flight_multi_airport_seperator"  triggers="manual" #p="ngbPopover" popoverClass="flight_multi_airport_popover" [ngbPopover]="popContent" (mouseenter)="p.open(flight)" (mouseleave)="p.close()">
-                                                            <p class="flight_multi_airport_seperator_line"></p>
+                                                        <div class="flight_multi_airport_seperator_oneway"  triggers="manual" #p="ngbPopover" popoverClass="flight_multi_airport_popover" [ngbPopover]="popContent" (mouseenter)="p.open(flight)" (mouseleave)="p.close()">
+                                                            <p class="flight_multi_airport_seperator_line_oneway"></p>
                                                             <span class="flight_multi_airport_seperator_dot"></span>
                                                         </div>
                                                         <ng-template #popContent>
@@ -431,7 +433,7 @@
     
                                         </div>
                                         <div class="flight_search_right">
-                                            <h6>{{flight.price.currency}} : {{flight.price.total}}</h6>
+                                            <h6>{{flight.price.currency}}   {{flight.price.total}}</h6>
                                             
                                             <button class="btn btn_theme btn_sm" (click)="OnClickBookNow(flight)">Book now</button>
                                             <!-- <p>*Discount applicable on some conditions</p> -->
@@ -553,6 +555,7 @@
                                         
                                     </div>
                                 </div>
+                                <!--TWO STOP -->
                                 <div class="flight_search_item_wrappper" *ngSwitchCase="3" >
                                     <div class="flight_search_items"  *ngIf="isCheckedTwoStop==true && flight.isShow==true">
                                         <div class="multi_city_flight_lists">
@@ -577,8 +580,8 @@
                                                 <div class="flight_search_middel">
                                                     <!-- (mouseenter)="p.open(flight)" (mouseleave)="p.close()" -->
                                                     <div class="flight_multi_airport_seprator_panel">
-                                                        <div class="flight_multi_airport_seperator"  triggers="manual" #p="ngbPopover" popoverClass="flight_multi_airport_popover" [ngbPopover]="popContent" (mouseenter)="p.open(flight)" (mouseleave)="p.close()">
-                                                            <p class="flight_multi_airport_seperator_line"></p>
+                                                        <div class="flight_multi_airport_seperator_oneway"  triggers="manual" #p="ngbPopover" popoverClass="flight_multi_airport_popover" [ngbPopover]="popContent" (mouseenter)="p.open(flight)" (mouseleave)="p.close()">
+                                                            <p class="flight_multi_airport_seperator_line_oneway"></p>
                                                             <span class="flight_multi_airport_seperator_dot"></span><span class="flight_multi_airport_seperator_dot"></span>
                                                         </div>
                                                         <ng-template #popContent>
@@ -615,7 +618,7 @@
     
                                         </div>
                                         <div class="flight_search_right">
-                                            <h6>{{flight.price.currency}} : {{flight.price.total}}</h6>
+                                            <h6>{{flight.price.currency}}   {{flight.price.total}}</h6>
                                             
                                             <button class="btn btn_theme btn_sm" (click)="OnClickBookNow(flight)">Book now</button>
                                             <!-- <p>*Discount applicable on some conditions</p> -->
@@ -745,7 +748,10 @@
                     </div>
                 </div>
             </div>
-            <!--Flights Info One Way End -->
+
+
+
+            <!-----------------------------Flights Info One Way End ------------------------------------>
 
               <!--Flights Info Round Trip-->
               <div class="col-lg-9" *ngIf="activeTab==2">
@@ -796,7 +802,7 @@
     
                                         </div>
                                         <div class="flight_search_right">
-                                            <h6>{{flight.price.currency}} : {{flight.price.total}}</h6>
+                                            <h6>{{flight.price.currency}}   {{flight.price.total}}</h6>
                                             
                                             <button class="btn btn_theme btn_sm" (click)="OnClickBookNow(flight)" >Book now</button>
                                             <h6 data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseExample'+i" 
@@ -939,7 +945,7 @@
     
                                         </div>
                                         <div class="flight_search_right">
-                                            <h6>{{flight.price.currency}} : {{flight.price.total}}</h6>
+                                            <h6>{{flight.price.currency}}   {{flight.price.total}}</h6>
                                             
                                             <button class="btn btn_theme btn_sm" (click)="OnClickBookNow(flight)">Book now</button>
                                             <h6 data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseExample'+i" 
@@ -1085,7 +1091,7 @@
         
                                             </div>
                                             <div class="flight_search_right">
-                                                <h6>{{flight.price.currency}} : {{flight.price.total}}</h6>
+                                                <h6>{{flight.price.currency}}   {{flight.price.total}}</h6>
                                                 
                                                 <button class="btn btn_theme btn_sm" (click)="OnClickBookNow(flight)">Book now</button>
                                                 <h6 data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseExample'+i" 
@@ -1174,7 +1180,6 @@
 </section>
 </div>
 <!-- Flight Search and Result Page End -->
-
 
 
 
