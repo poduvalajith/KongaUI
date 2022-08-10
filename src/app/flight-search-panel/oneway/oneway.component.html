@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="top_form_search_button">
-                        <button class="btn btn_theme btn_md" (click)="search()">Search</button>
+                        <button class="btn btn_theme btn_md" [disabled]="disableSearch"  [ngClass]="{'disabled': disableSearch}"   (click)="search()">Search</button>
                     </div>
                 </div>
             </form>

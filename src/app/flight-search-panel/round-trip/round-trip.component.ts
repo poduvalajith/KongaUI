@@ -17,6 +17,10 @@ import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightF
 export class RoundTripComponent implements OnInit {
   date = new FormControl(new Date());
   serializedDate = new FormControl(new Date().toISOString())
+  public disableSearch=false;
+
+  public fromSelected="";
+  public toSelected="";
 
   current_date:any;
   flight_details:any={
@@ -130,6 +134,20 @@ public travelers: Traveler[]=[];
 
   public search(){
 
+    //validations start
+  if(this.fromSelected ==""){
+    window.alert('Please select Origin') ;
+    //this.toastr.warning("Please select Origin");
+    return;
+}
+else if(this.toSelected == ""){
+   window.alert('Please select Destination') ;
+   //this.toastr.warning("Please select Destination");
+   return;
+}
+//validations end
+
+    this.disableSearch=true;
     var date_input = (<HTMLInputElement>document.getElementById('fromdate')).value;
     var date_retun = (<HTMLInputElement>document.getElementById('datereturn')).value;
     this.originDestinations[0].departureDateTimeRange.date=date_input;
@@ -177,10 +195,10 @@ public travelers: Traveler[]=[];
           { 
             this.searchResult.emit(this.resultDataList);
           }
-          console.log('Success');
+          this.disableSearch=false;
         },
         (error: any) => {
-          console.log('error');
+          this.disableSearch=false;
         });
   }
 
@@ -221,10 +239,12 @@ setReturnDate(e:any){
      if(type == "from"){
        this.originDestinations[0].originLocationCode= e.CityCode;
        this.originDestinations[1].destinationLocationCode= e.CityCode;
+       this.fromSelected= e.CityCode;
      }
      else if(type="to"){
        this.originDestinations[0].destinationLocationCode= e.CityCode;
        this.originDestinations[1].originLocationCode= e.CityCode;
+       this.toSelected= e.CityCode;
      }
    }
    

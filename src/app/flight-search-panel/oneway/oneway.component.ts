@@ -1,8 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import {  FlightOfferResponseModel } from 'src/app/Models/FlightOffer';
 import {FlightSearchApiService} from 'src/app/services/flight-search-api.service';
+// import { ToastrService } from 'ngx-toastr';
 import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightFilters, FlightOfferRequestModel, OriginDestination, PricingOptions, SearchCriteria, Traveler} from '../../Models/FlightRequstModel';
 
 @Component({
@@ -21,6 +23,9 @@ export class OnewayComponent implements OnInit {
   @Output() passengerChange2 = new EventEmitter<any>();
 
   FlightOfferRequestModel: FlightOfferRequestModel [] | undefined;
+  public disableSearch=false;
+  public fromSelected="";
+  public toSelected="";
 
   flightofferlist!:Observable<any[]>;
 
@@ -44,7 +49,9 @@ export class OnewayComponent implements OnInit {
 
   public date_selected:string="";
 
-  constructor(private service:FlightSearchApiService,private router: Router) { }
+  constructor(private service:FlightSearchApiService,private router: Router
+    //, private toastr: ToastrService
+    ) { }
 
 
   ngOnInit(): void {
@@ -120,7 +127,21 @@ export class OnewayComponent implements OnInit {
 //  }
   
  public search(){
-  
+
+  //validations start
+  if(this.fromSelected ==""){
+         window.alert('Please select Origin') ;
+         //this.toastr.warning("Please select Origin");
+         return;
+  }
+  else if(this.toSelected == ""){
+        window.alert('Please select Destination') ;
+        //this.toastr.warning("Please select Destination");
+        return;
+  }
+  //validations end
+
+  this.disableSearch=true;
   console.log(this.fromCity);
   var date_input = (<HTMLInputElement>document.getElementById('journeydate')).value;
   this.departureDateTimeRange.date=date_input;
@@ -171,10 +192,11 @@ export class OnewayComponent implements OnInit {
           this.searchResult.emit(this.resultDataList);
         
         }
-        console.log('Success');
+       
+        this.disableSearch=false;
       },
       (error: any) => {
-        console.log('error');
+        this.disableSearch=false;
       });
 }
 
@@ -204,9 +226,11 @@ fromClicked(e: any,type:string) {
   //console.log(date_input);
   if(type == "from"){
     this.originDestinations[0].originLocationCode= e.CityCode;
+    this.fromSelected= e.CityCode;
   }
   else if(type="to"){
     this.originDestinations[0].destinationLocationCode= e.CityCode;
+    this.toSelected= e.CityCode;
   }
 
 }
