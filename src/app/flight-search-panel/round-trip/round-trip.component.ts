@@ -69,7 +69,6 @@ export class RoundTripComponent implements OnInit {
   public infant_count=0;
   public totalPassengerCount=1;
 
-  public disableSearch=false;
 
   ngOnInit(): void {
     this.current_date=new Date().toISOString().substr(0, 10);

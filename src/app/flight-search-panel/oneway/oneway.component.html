@@ -53,6 +53,7 @@
                     <div class="top_form_search_button">
                         <button class="btn btn_theme btn_md" [disabled]="disableSearch"  [ngClass]="{'disabled': disableSearch}"   (click)="search()">Search</button>
                     </div>
+
                     <!--spinner-->
                     <ngx-spinner name="searchspinner" bdColor="rgba(0, 0, 0, 0.8)" size="small" color=" #e7057e" type="square-jelly-box"
                         style=" position: absolute;
@@ -61,6 +62,7 @@
                         <p style="color:  #e7057e" class="mt-80">fetching flights... </p>
                     </ngx-spinner>
                     <!--spinner end-->
+                    
                 </div>
             </form>
         </div>

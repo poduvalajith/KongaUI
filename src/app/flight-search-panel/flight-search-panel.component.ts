@@ -35,8 +35,6 @@ export class FlightSearchPanelComponent implements OnInit {
   public flightorderResponse: FlightOrdersResponse = new FlightOrdersResponse;
   public resultDataListCount: number=0;
 
-  // public resultDataListRoundTrip: FlightOfferResponseModel= new FlightOfferResponseModel;
-  // public resultDataListRoundTripCount: number=0;
 
   public imgbaseurl: string="http://travvise.com/images/Airlogo/sm";
 

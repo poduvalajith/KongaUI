@@ -5,7 +5,6 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import {  FlightOfferResponseModel } from 'src/app/Models/FlightOffer';
 import {FlightSearchApiService} from 'src/app/services/flight-search-api.service';
-// import { ToastrService } from 'ngx-toastr';
 import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightFilters, FlightOfferRequestModel, OriginDestination, PricingOptions, SearchCriteria, Traveler} from '../../Models/FlightRequstModel';
 
 @Component({
