@@ -3552,10 +3552,29 @@
                     </div>
                 </div>
             </div>
+            <!-- <div class="top_form_search_button">
+                <button class="btn btn_theme btn_md"  (click)="GoBackToSearch()">Go Back to Search</button>
+            </div> -->
         </div>
     </div>
 </section>
-
-
-
 <!-- Flight Booking Confirmation Final Page End -->
+
+
+<!--spinner-->
+<ngx-spinner name="searchspinner_reprice" bdColor="rgba(0, 0, 0, 0.8)" size="small" color=" #e7057e" type="square-jelly-box"
+style=" position: absolute;
+top: 50%;
+left: 50%;">
+<p style="color:  #e7057e" class="mt-80">confirming the price... </p>
+</ngx-spinner>
+<!--spinner end-->
+
+<!--spinner-->
+<ngx-spinner name="searchspinner_order" bdColor="rgba(0, 0, 0, 0.8)" size="small" color=" #e7057e" type="square-jelly-box"
+style=" position: absolute;
+top: 50%;
+left: 50%;">
+<p style="color:  #e7057e" class="mt-80">booking in progress... </p>
+</ngx-spinner>
+<!--spinner end-->

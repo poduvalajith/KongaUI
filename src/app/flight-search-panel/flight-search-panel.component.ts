@@ -2,6 +2,7 @@ import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
 import { DataFlightOffer, FlightOfferResponseModel } from '../Models/FlightOffer';
 import { Contact, FlightOrdersData, FlightOrdersRequest, FlightOrdersTraveler, FormOfPayment, Name, Other, Phone, TicketingAgreement } from '../Models/FlightOrdersRequest';
@@ -31,8 +32,6 @@ export class FlightSearchPanelComponent implements OnInit {
   "Date Change Amount= Date Change Fee (as per Airline Policy + ShareTrip Convenience Fee)."]
 
   public resultDataList: FlightOfferResponseModel= new FlightOfferResponseModel;
-  public resultDataListGlobal: FlightOfferResponseModel= new FlightOfferResponseModel;
-  public resultDataListGlobal2: FlightOfferResponseModel= new FlightOfferResponseModel;
   public flightorderResponse: FlightOrdersResponse = new FlightOrdersResponse;
   public resultDataListCount: number=0;
 
@@ -130,7 +129,7 @@ export class FlightSearchPanelComponent implements OnInit {
     }
   };
 
-  constructor(private service:FlightSearchApiService,public datepipe: DatePipe) {
+  constructor(private service:FlightSearchApiService,public datepipe: DatePipe,private spinner: NgxSpinnerService) {
    
    }
 
@@ -162,9 +161,6 @@ export class FlightSearchPanelComponent implements OnInit {
         element.isShow=true;
     });
     
-    // this.resultDataListGlobal=this.resultDataList;
-    // this.resultDataListGlobal2=this.resultDataList;
-    debugger;
     this.oneStopCount=0;
     this.twoStopCount=0;
     this.threeStopCount=0;
@@ -186,7 +182,6 @@ export class FlightSearchPanelComponent implements OnInit {
   }
 
   filterByAirline(Filtercarrier:any, event:any) {
-    debugger;
     if (event.target.checked) {
       this.resultDataList.data.forEach(element => {
             if(element.itineraries[0].segments[0].carrierCode==Filtercarrier.key){
@@ -214,8 +209,12 @@ export class FlightSearchPanelComponent implements OnInit {
     }
   }
 
+  GoBackToSearch(){
+    window.location.reload();
+  }
+
   OnClickBookNow(FlightOffer: DataFlightOffer){
-    debugger;
+    this.spinner.show("searchspinner_reprice");
     this.pricingRequestModel.data=new  PricingRequestData;
     this.pricingRequestModel.data.flightOffers= [new PricingRequestFlightOffer];
     if(FlightOffer){
@@ -251,7 +250,6 @@ export class FlightSearchPanelComponent implements OnInit {
     .pipe()
     .subscribe(
       (data: any) => {
-        debugger;
         if(data != null)
         { 
           if(this.infantCount>0){
@@ -264,13 +262,11 @@ export class FlightSearchPanelComponent implements OnInit {
           this.repricedFlightOffer=data.data.flightOffers[0];
           this.LoadPassengerDetails();
         }
-        console.log('Success');
+        this.spinner.hide("searchspinner_reprice");
       },
       (error: any) => {
-        debugger;
-        console.log('error');
+        this.spinner.hide("searchspinner_reprice");
       });
-debugger;
     // this.service.FlightOfferPricing(this.pricingRequestModel)
     // .subscribe(
     //   (resultData: any) => {
@@ -289,6 +285,10 @@ debugger;
 
      
   }
+
+ isLeapYear(year : number) {
+    return (year % 4 === 0 && year % 100 !==0 || year % 400 === 0);
+ }
 
   LoadPassengerDetails(){
     debugger;
@@ -350,6 +350,26 @@ debugger;
               childMinMonth=childMinMonth+1;
             }
      }
+     else if(month==2 && day==29){
+        infantMonth=infantMonth+1;
+        childMinMonth=childMinMonth+1;
+     }
+     else if(month==2 && day==28 ){
+              if(this.isLeapYear(childMinYear)==false){
+                childMinMonth=childMinMonth+1;
+              }
+              else{
+                childMinDay=day+1;
+              }
+              if(this.isLeapYear(infantYear)==false){
+                infantMonth=infantMonth+1;
+              }
+              else{
+                infantDay=day+1;
+              }
+        
+       
+    }
      else{
         infantDay=day+1;
         childMinDay=day+1;
@@ -711,7 +731,7 @@ changeInfantGender(e:any,passengerNo:string){
 
 
   OnClickPayNowBookingConfirmation(){
-    debugger;
+    this.spinner.show("searchspinner_order");
     this.flightOrdersRequestObj.data=new FlightOrdersData;
     this.flightOrdersRequestObj.data.type="flight-order";
     this.flightOrdersRequestObj.data.flightOffers= [new PricingRequestFlightOffer];
@@ -735,18 +755,17 @@ changeInfantGender(e:any,passengerNo:string){
     .pipe()
     .subscribe(
       (data: any) => {
-        debugger;
         
         if(data)
         { 
              this.flightorderResponse =data;
              this.isFlightConrifmationShow=true;
         }
-        console.log('Success');
+        this.spinner.hide("searchspinner_order");
       },
       (error: any) => {
         debugger;
-        console.log('error');
+        this.spinner.hide("searchspinner_order");
       });
 
 
@@ -754,7 +773,6 @@ changeInfantGender(e:any,passengerNo:string){
 
 
   LoadTravellers() {
-    debugger;
     this.flightOrdersRequestObj.data.travelers.length = this.totalTravellerCount;
      var travellerId=1;
     //ADULT START

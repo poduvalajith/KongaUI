@@ -6,6 +6,8 @@ import {  FlightOfferResponseModel } from 'src/app/Models/FlightOffer';
 import {FlightSearchApiService} from 'src/app/services/flight-search-api.service';
 import {FormControl} from '@angular/forms';
 import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightFilters, FlightOfferRequestModel, OriginDestination, PricingOptions, SearchCriteria, Traveler} from '../../Models/FlightRequstModel';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 
@@ -54,7 +56,10 @@ export class RoundTripComponent implements OnInit {
   public fromCity:any;
   public dateselected:any;
   public resultDataList: FlightOfferResponseModel= new FlightOfferResponseModel;
-  constructor(private service:FlightSearchApiService,private router: Router) { }
+  constructor(private service:FlightSearchApiService,private router: Router
+    , private toastr: ToastrService 
+    ,private spinner: NgxSpinnerService
+    ) { }
 
   public journeyDate_selected:string="";
   public returnDate_selected:string="";
@@ -136,18 +141,20 @@ public travelers: Traveler[]=[];
 
     //validations start
   if(this.fromSelected ==""){
-    window.alert('Please select Origin') ;
-    //this.toastr.warning("Please select Origin");
+    //window.alert('Please select Origin') ;
+    this.toastr.warning("Please select Origin");
     return;
 }
 else if(this.toSelected == ""){
-   window.alert('Please select Destination') ;
-   //this.toastr.warning("Please select Destination");
+   //window.alert('Please select Destination') ;
+   this.toastr.warning("Please select Destination");
    return;
 }
 //validations end
 
     this.disableSearch=true;
+    this.spinner.show('searchspinner2');
+
     var date_input = (<HTMLInputElement>document.getElementById('fromdate')).value;
     var date_retun = (<HTMLInputElement>document.getElementById('datereturn')).value;
     this.originDestinations[0].departureDateTimeRange.date=date_input;
@@ -196,9 +203,11 @@ else if(this.toSelected == ""){
             this.searchResult.emit(this.resultDataList);
           }
           this.disableSearch=false;
+          this.spinner.hide('searchspinner2');
         },
         (error: any) => {
           this.disableSearch=false;
+          this.spinner.hide('searchspinner2');
         });
   }
 

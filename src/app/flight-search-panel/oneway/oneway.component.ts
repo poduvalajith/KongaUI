@@ -1,5 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injectable, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import {  FlightOfferResponseModel } from 'src/app/Models/FlightOffer';
@@ -12,6 +13,7 @@ import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightF
   templateUrl: './oneway.component.html',
   styleUrls: ['./oneway.component.scss']
 })
+
 export class OnewayComponent implements OnInit {
   current_date:any;
   flight_details:any={
@@ -49,8 +51,10 @@ export class OnewayComponent implements OnInit {
 
   public date_selected:string="";
 
+
   constructor(private service:FlightSearchApiService,private router: Router
-    //, private toastr: ToastrService
+    , private toastr: ToastrService 
+    ,private spinner: NgxSpinnerService
     ) { }
 
 
@@ -130,18 +134,20 @@ export class OnewayComponent implements OnInit {
 
   //validations start
   if(this.fromSelected ==""){
-         window.alert('Please select Origin') ;
-         //this.toastr.warning("Please select Origin");
+         //window.alert('Please select Origin') ;
+         this.toastr.warning("Please select Origin");
          return;
   }
   else if(this.toSelected == ""){
-        window.alert('Please select Destination') ;
-        //this.toastr.warning("Please select Destination");
+        //window.alert('Please select Destination') ;
+        this.toastr.warning("Please select Destination");
         return;
   }
   //validations end
 
   this.disableSearch=true;
+  this.spinner.show('searchspinner');
+
   console.log(this.fromCity);
   var date_input = (<HTMLInputElement>document.getElementById('journeydate')).value;
   this.departureDateTimeRange.date=date_input;
@@ -194,9 +200,11 @@ export class OnewayComponent implements OnInit {
         }
        
         this.disableSearch=false;
+        this.spinner.hide('searchspinner');
       },
       (error: any) => {
         this.disableSearch=false;
+        this.spinner.hide('searchspinner');
       });
 }
 
