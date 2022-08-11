@@ -206,7 +206,22 @@ export class FlightSearchPanelComponent implements OnInit {
       //return (this.rows = this.temp);
     }
   }
-
+  filterByAirlineByAirline(Filtercarrier:any, event:any) {
+    debugger;
+    this.resultDataList.data.forEach(element => {
+      if(element.itineraries[0].segments[0].carrierCode==Filtercarrier.key){
+        element.isShow=true;
+      }
+      else {
+        element.isShow=false;
+        // this.resultDataList.data.forEach(element => {
+        //   if (element.itineraries[0].segments[0].carrierCode == Filtercarrier.key) {
+        //     element.isShow = false;
+        //   }
+        // });
+  }
+});
+  }
   GoBackToSearch(){
     window.location.reload();
   }

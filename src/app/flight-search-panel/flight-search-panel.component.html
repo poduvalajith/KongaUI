@@ -272,45 +272,17 @@
             <!--Flights Info One Way-->
             <div class="col-lg-9" *ngIf="activeTab==1">
                 <div class="row">
+                   
                     <div class="col-12" *ngIf="resultDataListCount > 0" >
                         <table class="table table-bordered" *ngFor="let dict of resultDataList.dictionaries | keyvalue">
-                            <tr *ngIf="dict.key=='carriers'">
-                              <th>Airline (LOS -> LHR)</th>
+                            <tr *ngIf="dict.key=='carriers'" style="border:1px solid #DDDDDD;">
                               <th *ngFor="let carrier of dict.value | keyvalue">
-                                <img src="{{imgbaseurl}}{{carrier.key}}.gif">
+                                <img src="{{imgbaseurl}}{{carrier.key}}.gif" (click)="filterByAirlineByAirline(carrier, $event)">
+                                <P style="font-size: 10px;font-weight: bold;">{{carrier.value}}</P>
                               </th>
                               
                             </tr>
-                            <!-- <tr>
-                              <td>Direct Flight</td>
-                              <td></td>
-                              <td></td>
-                              <td>$3400</td>
-                              <td></td>
-                              <td>$760</td>
-                              <td></td>
-                              <td></td>
-                            </tr>
-                            <tr>
-                              <td>1 Stop</td>
-                              <td></td>
-                              <td>$8700</td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                            </tr>
-                            <tr>
-                              <td>1+Stops</td>
-                              <td>$2700</td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td>$980</td>
-                              <td></td>
-                            </tr> -->
+                            
                           </table>
                     </div>
                     <div class="col-lg-12">
@@ -854,6 +826,18 @@
               <!--Flights Info Round Trip-->
               <div class="col-lg-9" *ngIf="activeTab==2">
                 <div class="row">
+                    <div class="col-12" *ngIf="resultDataListCount > 0" >
+                        <table class="table table-bordered" *ngFor="let dict of resultDataList.dictionaries | keyvalue">
+                            <tr *ngIf="dict.key=='carriers'" style="border:1px solid #DDDDDD;">
+                              <th *ngFor="let carrier of dict.value | keyvalue">
+                                <img src="{{imgbaseurl}}{{carrier.key}}.gif" (click)="filterByAirlineByAirline(carrier, $event)">
+                                <P style="font-size: 10px;font-weight: bold;">{{carrier.value}}</P>
+                              </th>
+                              
+                            </tr>
+                            
+                          </table>
+                    </div>
 
                     <div class="col-lg-12">
                         <div class="flight_search_result_wrapper">
