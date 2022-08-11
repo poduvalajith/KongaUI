@@ -841,6 +841,9 @@ changeInfantGender(e:any,passengerNo:string){
             canProceed = false;
             return canProceed;
           }
+          // else{
+          //      var email=(<HTMLInputElement>document.getElementById('email_adult1')).value;
+          // }
           break;
         case "2":
           if (this.isShowRequiredValidation("firstname_adult2")) {
