@@ -1,8 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injectable, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import {  FlightOfferResponseModel } from 'src/app/Models/FlightOffer';
 import {FlightSearchApiService} from 'src/app/services/flight-search-api.service';
+// import { ToastrService } from 'ngx-toastr';
 import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightFilters, FlightOfferRequestModel, OriginDestination, PricingOptions, SearchCriteria, Traveler} from '../../Models/FlightRequstModel';
 
 @Component({
@@ -10,6 +13,7 @@ import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightF
   templateUrl: './oneway.component.html',
   styleUrls: ['./oneway.component.scss']
 })
+
 export class OnewayComponent implements OnInit {
   current_date:any;
   flight_details:any={
@@ -21,6 +25,9 @@ export class OnewayComponent implements OnInit {
   @Output() passengerChange2 = new EventEmitter<any>();
 
   FlightOfferRequestModel: FlightOfferRequestModel [] | undefined;
+  public disableSearch=false;
+  public fromSelected="";
+  public toSelected="";
 
   flightofferlist!:Observable<any[]>;
 
@@ -44,9 +51,11 @@ export class OnewayComponent implements OnInit {
 
   public date_selected:string="";
 
-  public disableSearch=false;
 
-  constructor(private service:FlightSearchApiService,private router: Router) { }
+  constructor(private service:FlightSearchApiService,private router: Router
+    , private toastr: ToastrService 
+    ,private spinner: NgxSpinnerService
+    ) { }
 
 
   ngOnInit(): void {
@@ -123,9 +132,24 @@ export class OnewayComponent implements OnInit {
 //  }
   
  public search(){
-  
-  this.disableSearch=true;
 
+  //validations start
+  if(this.fromSelected ==""){
+         //window.alert('Please select Origin') ;
+         this.toastr.warning("Please select Origin");
+         return;
+  }
+  else if(this.toSelected == ""){
+        //window.alert('Please select Destination') ;
+        this.toastr.warning("Please select Destination");
+        return;
+  }
+  //validations end
+
+  this.disableSearch=true;
+  this.spinner.show('searchspinner');
+
+  console.log(this.fromCity);
   var date_input = (<HTMLInputElement>document.getElementById('journeydate')).value;
   this.departureDateTimeRange.date=date_input;
 
@@ -176,10 +200,13 @@ export class OnewayComponent implements OnInit {
           (<HTMLInputElement>document.getElementById('explore_area')).scrollIntoView();
         
         }
-         this.disableSearch=false;
+       
+        this.disableSearch=false;
+        this.spinner.hide('searchspinner');
       },
       (error: any) => {
         this.disableSearch=false;
+        this.spinner.hide('searchspinner');
       });
 }
 
@@ -210,9 +237,11 @@ fromClicked(e: any,type:string) {
   //console.log(date_input);
   if(type == "from"){
     this.originDestinations[0].originLocationCode= e.CityCode;
+    this.fromSelected= e.CityCode;
   }
   else if(type="to"){
     this.originDestinations[0].destinationLocationCode= e.CityCode;
+    this.toSelected= e.CityCode;
   }
 
 }

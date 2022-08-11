@@ -1,6 +1,8 @@
 import { LabelType, Options } from '@angular-slider/ngx-slider';
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
 import { DataFlightOffer, FlightOfferResponseModel } from '../Models/FlightOffer';
 import { Contact, FlightOrdersData, FlightOrdersRequest, FlightOrdersTraveler, FormOfPayment, Name, Other, Phone, TicketingAgreement } from '../Models/FlightOrdersRequest';
@@ -30,8 +32,6 @@ export class FlightSearchPanelComponent implements OnInit {
   "Date Change Amount= Date Change Fee (as per Airline Policy + ShareTrip Convenience Fee)."]
 
   public resultDataList: FlightOfferResponseModel= new FlightOfferResponseModel;
-  public resultDataListGlobal: FlightOfferResponseModel= new FlightOfferResponseModel;
-  public resultDataListGlobal2: FlightOfferResponseModel= new FlightOfferResponseModel;
   public flightorderResponse: FlightOrdersResponse = new FlightOrdersResponse;
   public resultDataListCount: number=0;
 
@@ -42,6 +42,18 @@ export class FlightSearchPanelComponent implements OnInit {
 
   public date1: Date=new Date();
   public date2: Date=new Date();
+
+  public current_date=new Date().toISOString().substr(0, 10);
+
+  public adultMaxDate=new Date().toISOString().substr(0, 10);
+  public childMinDate=new Date().toISOString().substr(0, 10);
+  public childMaxDate=new Date().toISOString().substr(0, 10);
+  public infantMinDate=new Date().toISOString().substr(0, 10);
+
+  public adultMaxDateVal=new Date().toISOString().substr(0, 10);
+  public childMinDateVal=new Date().toISOString().substr(0, 10);
+  public childMaxDateVal=new Date().toISOString().substr(0, 10);
+  public infantMinDateVal=new Date().toISOString().substr(0, 10);
 
   public isCheckedOneStop=true;
   public isCheckedTwoStop=true;
@@ -117,7 +129,7 @@ export class FlightSearchPanelComponent implements OnInit {
     }
   };
 
-  constructor(private service:FlightSearchApiService) {
+  constructor(private service:FlightSearchApiService,public datepipe: DatePipe,private spinner: NgxSpinnerService) {
    
    }
 
@@ -149,9 +161,6 @@ export class FlightSearchPanelComponent implements OnInit {
         element.isShow=true;
     });
     
-    // this.resultDataListGlobal=this.resultDataList;
-    // this.resultDataListGlobal2=this.resultDataList;
-    debugger;
     this.oneStopCount=0;
     this.twoStopCount=0;
     this.threeStopCount=0;
@@ -173,7 +182,6 @@ export class FlightSearchPanelComponent implements OnInit {
   }
 
   filterByAirline(Filtercarrier:any, event:any) {
-    debugger;
     if (event.target.checked) {
       this.resultDataList.data.forEach(element => {
             if(element.itineraries[0].segments[0].carrierCode==Filtercarrier.key){
@@ -201,8 +209,12 @@ export class FlightSearchPanelComponent implements OnInit {
     }
   }
 
+  GoBackToSearch(){
+    window.location.reload();
+  }
+
   OnClickBookNow(FlightOffer: DataFlightOffer){
-    debugger;
+    this.spinner.show("searchspinner_reprice");
     this.pricingRequestModel.data=new  PricingRequestData;
     this.pricingRequestModel.data.flightOffers= [new PricingRequestFlightOffer];
     if(FlightOffer){
@@ -238,7 +250,6 @@ export class FlightSearchPanelComponent implements OnInit {
     .pipe()
     .subscribe(
       (data: any) => {
-        debugger;
         if(data != null)
         { 
           if(this.infantCount>0){
@@ -251,13 +262,11 @@ export class FlightSearchPanelComponent implements OnInit {
           this.repricedFlightOffer=data.data.flightOffers[0];
           this.LoadPassengerDetails();
         }
-        console.log('Success');
+        this.spinner.hide("searchspinner_reprice");
       },
       (error: any) => {
-        debugger;
-        console.log('error');
+        this.spinner.hide("searchspinner_reprice");
       });
-debugger;
     // this.service.FlightOfferPricing(this.pricingRequestModel)
     // .subscribe(
     //   (resultData: any) => {
@@ -277,26 +286,170 @@ debugger;
      
   }
 
+ isLeapYear(year : number) {
+    return (year % 4 === 0 && year % 100 !==0 || year % 400 === 0);
+ }
+
   LoadPassengerDetails(){
-    //var travellerCount= localStorage.getItem('totalTravellerCount');
-    // this.adultTravellerList = [];
-    // for(var i=1;i<=this.adultCount;i++){
-    //   var traveller= new FlightOrdersTraveler;
-    //          this.adultTravellerList[i-1].id=i.toString();
-    //          this.adultTravellerList[i-1].gender=this.gender_adult1;
-    //          this.adultTravellerList[i-1].dateOfBirth= "";
-    //          this.adultTravellerList[i-1].name= new Name;
-    //          this.adultTravellerList[i-1].name.firstName="";
-    //          this.adultTravellerList[i-1].name.lastName="";
-    //          this.adultTravellerList[i-1].contact= new Contact;
-    //          this.adultTravellerList[i-1].contact.emailAddress="";
-    //          this.adultTravellerList[i-1].contact.phones= [new Phone];
-    //          this.adultTravellerList[i-1].contact.phones[0].deviceType="MOBILE";
-    //          this.adultTravellerList[i-1].contact.phones[0].countryCallingCode="234";
-    //          this.adultTravellerList[i-1].contact.phones[0].number="";
-    // }
+    debugger;
+    var journeryDepartureDate=new Date(this.repricedFlightOffer.itineraries[0].segments[0].departure.at);
+    //journeryDepartureDate.setDate(journeryDepartureDate.getFullYear() - 1);
+    //var dobmin=journeryDepartureDate;
+    //var dobmin= new Date(journeryDepartureDate.getFullYear() - 12);
+    //this.datepipe.transform(journeryDepartureDate, 'yyyy-MM-dd');
+    //this.adultMinDate.setDate(journeryDepartureDate.getDate() - 12);
+    var dateJourney=journeryDepartureDate.toISOString().substr(0, 10);
+    var arr=dateJourney.split('-');
+     let year= Number(arr[0]);
+     let month= Number(arr[1]);
+     let day= Number(arr[2]);
+     let adultYear=year-12;
+     let infantYear=year-2;
+     let childYear=year-2;
+     let childMinYear=year-12;
+     let infantMonth=month;
+     let childMinMonth=month;
+
+     var is31=this.checkMonth31(month.toString());
+
+     let infantDay=1;
+     let childMinDay=1;
+
+     if(is31==true && day==31){
+            if(infantMonth==12){
+              infantMonth=1;
+              infantYear=infantYear+1;
+            }
+            else{
+              infantMonth=infantMonth+1;
+            }
+            if(childMinMonth==12){
+              childMinMonth=1;
+              childMinYear=childMinYear+1;
+            }
+            else{
+              childMinMonth=childMinMonth+1;
+            }
+        
+     }
+     else if(is31==false && day==30){
+          // infantMonth=infantMonth+1;
+          // childMonth=childMonth+1;
+            if(infantMonth==12){
+              infantMonth=1;
+              infantYear=infantYear+1;
+            }
+            else{
+              infantMonth=infantMonth+1;
+            }
+            if(childMinMonth==12){
+              childMinMonth=1;
+              childMinYear=childMinYear+1;
+            }
+            else{
+              childMinMonth=childMinMonth+1;
+            }
+     }
+     else if(month==2 && day==29){
+        infantMonth=infantMonth+1;
+        childMinMonth=childMinMonth+1;
+     }
+     else if(month==2 && day==28 ){
+              if(this.isLeapYear(childMinYear)==false){
+                childMinMonth=childMinMonth+1;
+              }
+              else{
+                childMinDay=day+1;
+              }
+              if(this.isLeapYear(infantYear)==false){
+                infantMonth=infantMonth+1;
+              }
+              else{
+                infantDay=day+1;
+              }
+        
+       
+    }
+     else{
+        infantDay=day+1;
+        childMinDay=day+1;
+     }
+
+     
+ 
+     let infMonth=infantMonth.toString();
+     let chMinMonth=childMinMonth.toString();
+     let infDay=infantDay.toString();
+     let chMinDay=childMinDay.toString();
+     if(new String(infantMonth).length==1){
+      infMonth="0"+  infantMonth.toString();
+     }
+     if(new String(childMinMonth).length==1){
+      chMinMonth="0"+  childMinMonth.toString();
+     }
+     if(new String(infantDay).length==1){
+      infDay="0"+  infantDay.toString();
+     }
+     if(new String(childMinDay).length==1){
+      chMinDay="0"+  childMinDay.toString();
+     }
+     
+     //year=year-12;
+     this.adultMaxDate=adultYear.toString()+"-"+arr[1]+"-"+arr[2];
+    this.childMinDate = childMinYear.toString()+"-"+chMinMonth+"-"+chMinDay.toString();
+    this.childMaxDate =  childYear.toString()+"-"+arr[1]+"-"+arr[2];
+    this.infantMinDate = infantYear.toString()+"-"+infMonth+"-"+infDay.toString();
+
+    this.adultMaxDateVal=arr[2]+"/"+arr[1]+"/"+adultYear.toString();
+    this.childMinDateVal =  chMinDay.toString()+"/"+chMinMonth+"/"+childYear.toString();
+    this.childMaxDateVal = arr[2]+"/"+arr[1]+"/"+adultYear.toString();
+    this.infantMinDateVal =  infDay.toString()+"/"+infMonth+"/"+infantYear.toString();
     
     this.isFlightSearchAndResultShow=false;
+  }
+
+  checkMonth31(mon:string){
+          switch(mon){
+            case "1": 
+              return true;
+              break;
+              case "2": 
+              return false;
+              break;
+              case "3": 
+              return true;
+              break;
+              case "4": 
+              return false;
+              break;
+              case "5": 
+              return true;
+              break;
+              case "6": 
+              return false;
+              break;
+              case "7": 
+              return true;
+              break;
+              case "8": 
+              return true;
+              break;
+              case "9": 
+              return false;
+              break;
+              case "10": 
+              return true;
+              break;
+              case "11": 
+              return false;
+              break;
+              case "12": 
+              return true;
+              break;
+            default:
+              return true;
+              break;
+          }
   }
 
   changeGender(e:any,passengerNo:string){
@@ -578,7 +731,7 @@ changeInfantGender(e:any,passengerNo:string){
 
 
   OnClickPayNowBookingConfirmation(){
-    debugger;
+    this.spinner.show("searchspinner_order");
     this.flightOrdersRequestObj.data=new FlightOrdersData;
     this.flightOrdersRequestObj.data.type="flight-order";
     this.flightOrdersRequestObj.data.flightOffers= [new PricingRequestFlightOffer];
@@ -602,18 +755,17 @@ changeInfantGender(e:any,passengerNo:string){
     .pipe()
     .subscribe(
       (data: any) => {
-        debugger;
         
         if(data)
         { 
              this.flightorderResponse =data;
              this.isFlightConrifmationShow=true;
         }
-        console.log('Success');
+        this.spinner.hide("searchspinner_order");
       },
       (error: any) => {
         debugger;
-        console.log('error');
+        this.spinner.hide("searchspinner_order");
       });
 
 
@@ -621,7 +773,6 @@ changeInfantGender(e:any,passengerNo:string){
 
 
   LoadTravellers() {
-    debugger;
     this.flightOrdersRequestObj.data.travelers.length = this.totalTravellerCount;
      var travellerId=1;
     //ADULT START

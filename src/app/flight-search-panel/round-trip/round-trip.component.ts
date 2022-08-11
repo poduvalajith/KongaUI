@@ -6,6 +6,8 @@ import {  FlightOfferResponseModel } from 'src/app/Models/FlightOffer';
 import {FlightSearchApiService} from 'src/app/services/flight-search-api.service';
 import {FormControl} from '@angular/forms';
 import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightFilters, FlightOfferRequestModel, OriginDestination, PricingOptions, SearchCriteria, Traveler} from '../../Models/FlightRequstModel';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 
@@ -17,6 +19,10 @@ import {AdditionalInformation, CabinRestriction, DepartureDateTimeRange, FlightF
 export class RoundTripComponent implements OnInit {
   date = new FormControl(new Date());
   serializedDate = new FormControl(new Date().toISOString())
+  public disableSearch=false;
+
+  public fromSelected="";
+  public toSelected="";
 
   current_date:any;
   flight_details:any={
@@ -50,7 +56,10 @@ export class RoundTripComponent implements OnInit {
   public fromCity:any;
   public dateselected:any;
   public resultDataList: FlightOfferResponseModel= new FlightOfferResponseModel;
-  constructor(private service:FlightSearchApiService,private router: Router) { }
+  constructor(private service:FlightSearchApiService,private router: Router
+    , private toastr: ToastrService 
+    ,private spinner: NgxSpinnerService
+    ) { }
 
   public journeyDate_selected:string="";
   public returnDate_selected:string="";
@@ -133,7 +142,21 @@ public travelers: Traveler[]=[];
 
   public search(){
 
+    //validations start
+  if(this.fromSelected ==""){
+    //window.alert('Please select Origin') ;
+    this.toastr.warning("Please select Origin");
+    return;
+}
+else if(this.toSelected == ""){
+   //window.alert('Please select Destination') ;
+   this.toastr.warning("Please select Destination");
+   return;
+}
+//validations end
+
     this.disableSearch=true;
+    this.spinner.show('searchspinner2');
 
     var date_input = (<HTMLInputElement>document.getElementById('fromdate')).value;
     var date_retun = (<HTMLInputElement>document.getElementById('datereturn')).value;
@@ -184,9 +207,11 @@ public travelers: Traveler[]=[];
             (<HTMLInputElement>document.getElementById('explore_area')).scrollIntoView();
           }
           this.disableSearch=false;
+          this.spinner.hide('searchspinner2');
         },
         (error: any) => {
           this.disableSearch=false;
+          this.spinner.hide('searchspinner2');
         });
   }
 
@@ -228,10 +253,12 @@ setReturnDate(e:any){
      if(type == "from"){
        this.originDestinations[0].originLocationCode= e.CityCode;
        this.originDestinations[1].destinationLocationCode= e.CityCode;
+       this.fromSelected= e.CityCode;
      }
      else if(type="to"){
        this.originDestinations[0].destinationLocationCode= e.CityCode;
        this.originDestinations[1].originLocationCode= e.CityCode;
+       this.toSelected= e.CityCode;
      }
    }
    
