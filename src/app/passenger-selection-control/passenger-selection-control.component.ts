@@ -29,24 +29,42 @@ export class PassengerSelectionControlComponent implements OnInit {
     this.passengerChange.emit(this.passenger);
   }
   incrementPassengers(passengerType:string,e:any){
-    debugger;
-    e.stopPropagation();
-    e.preventDefault();
-    this.passenger[passengerType]=this.passenger[passengerType]+1;
-    this.passenger.total=(this.passenger.adult+this.passenger.childeren+this.passenger.infant);
-    this.passengerChange.emit(this.passenger);
-  }
-  decrementPassengers(passengerType:string,e:any){
-    debugger;
-    // if(=="adult")
-    e.stopPropagation();
-    e.preventDefault();
-    if(this.passenger[passengerType]!=0){
-      this.passenger[passengerType]=this.passenger[passengerType]-1;
+    if(passengerType=="infant" && this.passenger["adult"] < this.passenger["infant"]+1){
+      e.stopPropagation();
+      e.preventDefault();
+     }
+     else if((passengerType=="adult"||passengerType=="childeren") && (this.passenger["adult"]+this.passenger["childeren"]) == 9 ){
+      e.stopPropagation();
+      e.preventDefault();
+     }
+     else{
+      e.stopPropagation();
+      e.preventDefault();
+      this.passenger[passengerType]=this.passenger[passengerType]+1;
       this.passenger.total=(this.passenger.adult+this.passenger.childeren+this.passenger.infant);
       this.passengerChange.emit(this.passenger);
-    }
+     }
     
+  }
+  decrementPassengers(passengerType:string,e:any){
+    if (passengerType == "adult" && this.passenger[passengerType] == 1) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    else if (passengerType == "adult" && this.passenger["infant"] == this.passenger["adult"]) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    else {
+      e.stopPropagation();
+      e.preventDefault();
+      if (this.passenger[passengerType] != 0) {
+        this.passenger[passengerType] = this.passenger[passengerType] - 1;
+        this.passenger.total = (this.passenger.adult + this.passenger.childeren + this.passenger.infant);
+        this.passengerChange.emit(this.passenger);
+      }
+    }
+
   }
 
   onClickCabin(cabinClass:string){

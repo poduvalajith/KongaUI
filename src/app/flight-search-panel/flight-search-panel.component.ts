@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { DataFlightOffer, FlightOfferResponseModel } from '../Models/FlightOffer';
 import { Contact, FlightOrdersData, FlightOrdersRequest, FlightOrdersTraveler, FormOfPayment, Name, Other, Phone, TicketingAgreement } from '../Models/FlightOrdersRequest';
@@ -127,7 +128,7 @@ export class FlightSearchPanelComponent implements OnInit {
     }
   };
 
-  constructor(private service:FlightSearchApiService,public datepipe: DatePipe,private spinner: NgxSpinnerService) {
+  constructor(private service:FlightSearchApiService,public datepipe: DatePipe,private spinner: NgxSpinnerService, private toastr: ToastrService ) {
    
    }
 
@@ -555,7 +556,6 @@ export class FlightSearchPanelComponent implements OnInit {
   }
 
   changeChildGender(e:any,passengerNo:string){
-    debugger;
     console.log(e.target.value);
     switch(passengerNo){
      case "1":
@@ -644,7 +644,6 @@ export class FlightSearchPanelComponent implements OnInit {
 }
 
 changeInfantGender(e:any,passengerNo:string){
-  debugger;
   console.log(e.target.value);
   switch(passengerNo){
    case "1":
@@ -744,46 +743,839 @@ changeInfantGender(e:any,passengerNo:string){
 
 
   OnClickPayNowBookingConfirmation(){
-    this.spinner.show("searchspinner_order");
-    this.flightOrdersRequestObj.data=new FlightOrdersData;
-    this.flightOrdersRequestObj.data.type="flight-order";
-    this.flightOrdersRequestObj.data.flightOffers= [new PricingRequestFlightOffer];
-    this.flightOrdersRequestObj.data.flightOffers[0]=this.repricedFlightOffer;
-    this.LoadTravellers();
+
+    if(this.callPassengerRequiredValidation()){
+      this.spinner.show("searchspinner_order");
+      this.flightOrdersRequestObj.data=new FlightOrdersData;
+      this.flightOrdersRequestObj.data.type="flight-order";
+      this.flightOrdersRequestObj.data.flightOffers= [new PricingRequestFlightOffer];
+      this.flightOrdersRequestObj.data.flightOffers[0]=this.repricedFlightOffer;
+      this.LoadTravellers();
+      
+  
+      this.flightOrdersRequestObj.data.ticketingAgreement= new TicketingAgreement;
+      this.flightOrdersRequestObj.data.ticketingAgreement.option="DELAY_TO_CANCEL";
+      this.flightOrdersRequestObj.data.ticketingAgreement.delay="6D";
+  
+      this.flightOrdersRequestObj.data.formOfPayments= [new FormOfPayment];
+      this.flightOrdersRequestObj.data.formOfPayments[0].other=new Other;
+      this.flightOrdersRequestObj.data.formOfPayments[0].other.flightOfferIds=[this.flightOrdersRequestObj.data.flightOffers[0].id];
+      this.flightOrdersRequestObj.data.formOfPayments[0].other.method="CASH";
+  
+      this.flightOrdersRequestObj.data.remarks=null;
+      this.flightOrdersRequestObj.data.contacts=null;
+  
+      this.service.FlightOrders(this.flightOrdersRequestObj)
+      .pipe()
+      .subscribe(
+        (data: any) => {
+          
+          if(data)
+          { 
+               this.flightorderResponse =data;
+               this.isFlightConrifmationShow=true;
+          }
+          this.spinner.hide("searchspinner_order");
+        },
+        (error: any) => {
+          debugger;
+          this.spinner.hide("searchspinner_order");
+        });
+  
+    }
     
+  }
 
-    this.flightOrdersRequestObj.data.ticketingAgreement= new TicketingAgreement;
-    this.flightOrdersRequestObj.data.ticketingAgreement.option="DELAY_TO_CANCEL";
-    this.flightOrdersRequestObj.data.ticketingAgreement.delay="6D";
+  callPassengerRequiredValidation(){
+    var returnData=true;
+    for(var i=1;i<=this.adultCount;i++){
+      returnData=this.checkRequiredValidation("adult",i.toString());
+      if(returnData==false){
+         return returnData;
+      }
+    }
+    for(var i=1;i<=this.childCount;i++){
+      returnData=this.checkRequiredValidation("child",i.toString());
+      if(returnData==false){
+         return returnData;
+      }
+    }
+    for(var i=1;i<=this.infantCount;i++){
+      returnData=this.checkRequiredValidation("infant",i.toString());
+      if(returnData==false){
+         return returnData;
+      }
+    }
+    
+    return returnData;
+  }
 
-    this.flightOrdersRequestObj.data.formOfPayments= [new FormOfPayment];
-    this.flightOrdersRequestObj.data.formOfPayments[0].other=new Other;
-    this.flightOrdersRequestObj.data.formOfPayments[0].other.flightOfferIds=[this.flightOrdersRequestObj.data.flightOffers[0].id];
-    this.flightOrdersRequestObj.data.formOfPayments[0].other.method="CASH";
 
-    this.flightOrdersRequestObj.data.remarks=null;
-    this.flightOrdersRequestObj.data.contacts=null;
-
-    this.service.FlightOrders(this.flightOrdersRequestObj)
-    .pipe()
-    .subscribe(
-      (data: any) => {
-        
-        if(data)
-        { 
-             this.flightorderResponse =data;
-             this.isFlightConrifmationShow=true;
-        }
-        this.spinner.hide("searchspinner_order");
-      },
-      (error: any) => {
-        debugger;
-        this.spinner.hide("searchspinner_order");
-      });
-
+  checkRequiredValidation(passengerType: string, passengerTypeCount: string) {
+    var canProceed = true;
+    if (passengerType == "adult") {
+      switch (passengerTypeCount) {
+        case "1":
+          if (this.isShowRequiredValidation("firstname_adult1")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult1")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult1")) {
+            this.toastr.warning("Email is required for Passenger (Adult 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult1")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult1")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "2":
+          if (this.isShowRequiredValidation("firstname_adult2")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult2")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult2")) {
+            this.toastr.warning("Email is required for Passenger (Adult 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult2")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult2")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "3":
+          if (this.isShowRequiredValidation("firstname_adult3")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult3")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult3")) {
+            this.toastr.warning("Email is required for Passenger (Adult 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult3")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult3")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "4":
+          if (this.isShowRequiredValidation("firstname_adult4")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult4")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult4")) {
+            this.toastr.warning("Email is required for Passenger (Adult 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult4")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult4")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "5":
+          if (this.isShowRequiredValidation("firstname_adult5")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult5")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult5")) {
+            this.toastr.warning("Email is required for Passenger (Adult 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult5")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult5")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "6":
+          if (this.isShowRequiredValidation("firstname_adult6")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult6")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult6")) {
+            this.toastr.warning("Email is required for Passenger (Adult 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult6")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult6")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "7":
+          if (this.isShowRequiredValidation("firstname_adult7")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult7")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult7")) {
+            this.toastr.warning("Email is required for Passenger (Adult 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult7")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult7")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "8":
+          if (this.isShowRequiredValidation("firstname_adult8")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult8")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult8")) {
+            this.toastr.warning("Email is required for Passenger (Adult 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult8")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult8")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "9":
+          if (this.isShowRequiredValidation("firstname_adult9")) {
+            this.toastr.warning("First Name is required for Passenger (Adult 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_adult9")) {
+            this.toastr.warning("Last Name is required for Passenger (Adult 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_adult9")) {
+            this.toastr.warning("Email is required for Passenger (Adult 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_adult9")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Adult 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_adult9")) {
+            this.toastr.warning("DOB is required for Passenger (Adult 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        default:
+          return canProceed;
+          break;
+      }
+    }
+    else if (passengerType == "child") {
+      switch (passengerTypeCount) {
+        case "1":
+          if (this.isShowRequiredValidation("firstname_child1")) {
+            this.toastr.warning("First Name is required for Passenger (Child 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child1")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child1")) {
+            this.toastr.warning("Email is required for Passenger (Child 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child1")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child1")) {
+            this.toastr.warning("DOB is required for Passenger (Child 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "2":
+          if (this.isShowRequiredValidation("firstname_child2")) {
+            this.toastr.warning("First Name is required for Passenger (Child 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child2")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child2")) {
+            this.toastr.warning("Email is required for Passenger (Child 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child2")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child2")) {
+            this.toastr.warning("DOB is required for Passenger (Child 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "3":
+          if (this.isShowRequiredValidation("firstname_child3")) {
+            this.toastr.warning("First Name is required for Passenger (Child 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child3")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child3")) {
+            this.toastr.warning("Email is required for Passenger (Child 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child3")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child3")) {
+            this.toastr.warning("DOB is required for Passenger (Child 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "4":
+          if (this.isShowRequiredValidation("firstname_child4")) {
+            this.toastr.warning("First Name is required for Passenger (Child 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child4")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child4")) {
+            this.toastr.warning("Email is required for Passenger (Child 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child4")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child4")) {
+            this.toastr.warning("DOB is required for Passenger (Child 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "5":
+          if (this.isShowRequiredValidation("firstname_child5")) {
+            this.toastr.warning("First Name is required for Passenger (Child 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child5")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child5")) {
+            this.toastr.warning("Email is required for Passenger (Child 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child5")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child5")) {
+            this.toastr.warning("DOB is required for Passenger (Child 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "6":
+          if (this.isShowRequiredValidation("firstname_child6")) {
+            this.toastr.warning("First Name is required for Passenger (Child 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child6")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child6")) {
+            this.toastr.warning("Email is required for Passenger (Child 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child6")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child6")) {
+            this.toastr.warning("DOB is required for Passenger (Child 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "7":
+          if (this.isShowRequiredValidation("firstname_child7")) {
+            this.toastr.warning("First Name is required for Passenger (Child 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child7")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child7")) {
+            this.toastr.warning("Email is required for Passenger (Child 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child7")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child7")) {
+            this.toastr.warning("DOB is required for Passenger (Child 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "8":
+          if (this.isShowRequiredValidation("firstname_child8")) {
+            this.toastr.warning("First Name is required for Passenger (Child 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child8")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child8")) {
+            this.toastr.warning("Email is required for Passenger (Child 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child8")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child8")) {
+            this.toastr.warning("DOB is required for Passenger (Child 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "9":
+          if (this.isShowRequiredValidation("firstname_child9")) {
+            this.toastr.warning("First Name is required for Passenger (Child 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_child9")) {
+            this.toastr.warning("Last Name is required for Passenger (Child 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_child9")) {
+            this.toastr.warning("Email is required for Passenger (Child 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_child9")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Child 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_child9")) {
+            this.toastr.warning("DOB is required for Passenger (Child 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        default:
+          return canProceed;
+          break;
+      }
+    }
+    else if (passengerType == "infant") {
+      switch (passengerTypeCount) {
+        case "1":
+          if (this.isShowRequiredValidation("firstname_infant1")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant1")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant1")) {
+            this.toastr.warning("Email is required for Passenger (Infant 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant1")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant1")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 1)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "2":
+          if (this.isShowRequiredValidation("firstname_infant2")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant2")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant2")) {
+            this.toastr.warning("Email is required for Passenger (Infant 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant2")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant2")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 2)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "3":
+          if (this.isShowRequiredValidation("firstname_infant3")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant3")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant3")) {
+            this.toastr.warning("Email is required for Passenger (Infant 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant3")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant3")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 3)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "4":
+          if (this.isShowRequiredValidation("firstname_infant4")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant4")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant4")) {
+            this.toastr.warning("Email is required for Passenger (Infant 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant4")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant4")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 4)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "5":
+          if (this.isShowRequiredValidation("firstname_infant5")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant5")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant5")) {
+            this.toastr.warning("Email is required for Passenger (Infant 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant5")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant5")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 5)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "6":
+          if (this.isShowRequiredValidation("firstname_infant6")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant6")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant6")) {
+            this.toastr.warning("Email is required for Passenger (Infant 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant6")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant6")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 6)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "7":
+          if (this.isShowRequiredValidation("firstname_infant7")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant7")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant7")) {
+            this.toastr.warning("Email is required for Passenger (Infant 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant7")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant7")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 7)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "8":
+          if (this.isShowRequiredValidation("firstname_infant8")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant8")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant8")) {
+            this.toastr.warning("Email is required for Passenger (Infant 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant8")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant8")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 8)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        case "9":
+          if (this.isShowRequiredValidation("firstname_infant9")) {
+            this.toastr.warning("First Name is required for Passenger (Infant 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("lastname_infant9")) {
+            this.toastr.warning("Last Name is required for Passenger (Infant 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("email_infant9")) {
+            this.toastr.warning("Email is required for Passenger (Infant 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("phonenumber_infant9")) {
+            this.toastr.warning("Mobile Number is required for Passenger (Infant 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          else if (this.isShowRequiredValidation("dob_infant9")) {
+            this.toastr.warning("DOB is required for Passenger (Infant 9)");
+            canProceed = false;
+            return canProceed;
+          }
+          break;
+        default:
+          return canProceed;
+          break;
+      }
+    }
+    return canProceed;
 
   }
 
+  isShowRequiredValidation(fieldName:string){
+    var value =(<HTMLInputElement>document.getElementById(fieldName)).value;
+    if(value == null || value==""|| value.trim()==""|| value==" "){
+         return true;
+    }
+    else{
+      return false;
+    }
+  }
 
   LoadTravellers() {
     this.flightOrdersRequestObj.data.travelers.length = this.totalTravellerCount;
