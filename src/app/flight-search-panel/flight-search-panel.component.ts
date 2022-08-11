@@ -810,7 +810,6 @@ changeInfantGender(e:any,passengerNo:string){
     return returnData;
   }
 
-
   checkRequiredValidation(passengerType: string, passengerTypeCount: string) {
     var canProceed = true;
     if (passengerType == "adult") {

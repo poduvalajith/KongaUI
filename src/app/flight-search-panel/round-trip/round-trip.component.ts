@@ -10,7 +10,6 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 
-
 @Component({
   selector: 'app-round-trip',
   templateUrl: './round-trip.component.html',

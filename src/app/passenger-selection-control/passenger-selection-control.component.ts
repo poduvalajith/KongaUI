@@ -12,7 +12,6 @@ export class PassengerSelectionControlComponent implements OnInit {
     config.autoClose = false;
   }
   
-  
   //@Input() 
   passenger:any={
     adult:1,

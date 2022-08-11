@@ -56,7 +56,6 @@ export class OnewayComponent implements OnInit {
     ,private spinner: NgxSpinnerService
     ) { }
 
-
   ngOnInit(): void {
     this.current_date=new Date().toISOString().substr(0, 10);
      this.date_selected=this.current_date;
