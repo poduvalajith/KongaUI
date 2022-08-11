@@ -60,10 +60,13 @@ export class RoundTripComponent implements OnInit {
   public infant_count=0;
   public totalPassengerCount=1;
 
+  public disableSearch=false;
+
   ngOnInit(): void {
     this.current_date=new Date().toISOString().substr(0, 10);
     this.journeyDate_selected=this.current_date;
     this.returnDate_selected=this.current_date;
+    (<HTMLInputElement>document.getElementById('homearea')).scrollIntoView();
   }
   public originDestinations : OriginDestination[]= [{
     id: "1",
@@ -130,6 +133,8 @@ public travelers: Traveler[]=[];
 
   public search(){
 
+    this.disableSearch=true;
+
     var date_input = (<HTMLInputElement>document.getElementById('fromdate')).value;
     var date_retun = (<HTMLInputElement>document.getElementById('datereturn')).value;
     this.originDestinations[0].departureDateTimeRange.date=date_input;
@@ -176,11 +181,12 @@ public travelers: Traveler[]=[];
           if(data)
           { 
             this.searchResult.emit(this.resultDataList);
+            (<HTMLInputElement>document.getElementById('explore_area')).scrollIntoView();
           }
-          console.log('Success');
+          this.disableSearch=false;
         },
         (error: any) => {
-          console.log('error');
+          this.disableSearch=false;
         });
   }
 
@@ -198,6 +204,7 @@ public travelers: Traveler[]=[];
   cabinChange(e:any){
      if(e != null){
             this.cabinRestriction[0].cabin=e;
+            (<HTMLElement>document.getElementById("dropdownMenuButton1")).click();
      }
   }
 

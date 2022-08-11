@@ -4321,3 +4321,43 @@ textarea {
     visibility: visible;
     top: 50%
 }
+table > thead:first-child > tr:first-child > th:first-child {
+    position: absolute;
+    display: inline-block;
+    background-color: red;
+    height: 100%;
+}
+
+.table > tbody > tr > td:first-child {
+    position: absolute;
+    display: inline-block;
+    background-color: red;
+    height: 100%;
+}
+
+.table > thead:first-child > tr:first-child > th:nth-child(2) {
+    padding-left: 40px;
+}
+
+.table > tbody > tr > td:nth-child(2) {
+    padding-left: 50px !important;
+}
+
+th {
+    text-align: center;
+    
+} 
+th img{
+    max-width: 90px;
+    max-height: 90px;
+}
+td{
+    text-align: center;
+    height: 100%;
+    border-color: inherit !important;
+}
+tr{
+    line-height: 50px;
+    min-height: 50px;
+    height: 50px; 
+}

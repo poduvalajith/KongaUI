@@ -1,5 +1,26 @@
+<!-- preloader Area -->
+<!-- <div class="preloader">
+    <div class="d-table">
+        <div class="d-table-cell">
+            <div class="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+</div> -->
 <!-- Flight Search and Result Page Start -->
-<div *ngIf="isFlightSearchAndResultShow==true && isFlightConrifmationShow==false">
+<div *ngIf="isFlightSearchAndResultShow==true && isFlightConrifmationShow==false" id="homearea">
 <!-- Common Banner Area -->
 <section id="common_banner">
     <img class="banner_logo" src="assets/img/common/logo_trav.png"> 
@@ -231,12 +252,66 @@
                 </div>
             </div>
             <!--Filters End-->
+            
 
-
+            <!-- <div class="tour_search_type" *ngFor="let dict of resultDataList.dictionaries | keyvalue">
+                <div class="form-check" *ngIf="dict.key=='carriers'">
+                    <div *ngFor="let carrier of dict.value | keyvalue">
+                        <input class="form-check-input" type="checkbox" value="" [checked]="true"  (change)="filterByAirline(carrier, $event)" id="flexCheckDefaults1">
+                        <label class="form-check-label" for="flexCheckDefaults1">
+                            <span class="area_flex_one">
+                                <span>{{carrier.value}}</span>
+                               
+                            </span>
+                        </label>
+                    </div>
+                    
+                </div>
+            </div> -->
             <!--Flights Info One Way-->
             <div class="col-lg-9" *ngIf="activeTab==1">
                 <div class="row">
-                    <div class="col-12" appAirlinesFilter></div>
+                    <div class="col-12" *ngIf="resultDataListCount > 0" >
+                        <table class="table table-bordered" *ngFor="let dict of resultDataList.dictionaries | keyvalue">
+                            <tr *ngIf="dict.key=='carriers'">
+                              <th>Airline (LOS -> LHR)</th>
+                              <th *ngFor="let carrier of dict.value | keyvalue">
+                                <img src="{{imgbaseurl}}{{carrier.key}}.gif">
+                              </th>
+                              
+                            </tr>
+                            <!-- <tr>
+                              <td>Direct Flight</td>
+                              <td></td>
+                              <td></td>
+                              <td>$3400</td>
+                              <td></td>
+                              <td>$760</td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td>1 Stop</td>
+                              <td></td>
+                              <td>$8700</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td>1+Stops</td>
+                              <td>$2700</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>$980</td>
+                              <td></td>
+                            </tr> -->
+                          </table>
+                    </div>
                     <div class="col-lg-12">
                         <div class="flight_search_result_wrapper">
                              <!-- Flight Search Item -->
@@ -254,27 +329,34 @@
                                                         <p>From</p>
                                                         <h3>{{flight.itineraries[0].segments[0].departure.iataCode}}</h3>
                                                         <!-- <h6>JFK - John F. Kennedy International...</h6> -->
-                                                        <h6><b>{{flight.itineraries[0].segments[0].departure.departtime}}<br/>
+                                                        <h6><b>{{flight.itineraries[0].segments[0].departure.at | date:'dd/MM/yyyy HH:mm'}}<br/>
                                                             {{flight.itineraries[0].segments[0].carrierCode}} {{flight.itineraries[0].segments[0].number}} <br/> 
                                                             {{flight.itineraries[0].segments[0].aircraft.code}}</b>&nbsp;&nbsp;&nbsp;
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                            
                                                         </h6>
                                                     </div>
                                                 </div>
                                                 <div class="flight_search_middel">
                                                     <div class="flight_right_arrow">
-                                                        <i class="bi bi-arrow-right"></i>
+                                                        <div class="flight_multi_airport_seperator_oneway" >
+                                                            <p class="flight_multi_airport_seperator_line_oneway"></p>
+                                                        </div>
                                                         <h6>Non-stop</h6>
                                                         <p>{{flight.itineraries[0].duration}}</p>
+                                                        <p>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                        
+
+                                                        </p>
                                                         
                                                     </div>
                                                     <div class="flight_search_destination">
                                                         <p>To</p>
                                                         <h3>{{flight.itineraries[0].segments[0].arrival.iataCode}} </h3>
                                                         <!-- <h6>LCY, London city airport </h6> -->
-                                                        <h6><b>{{flight.itineraries[0].segments[0].arrival.arrivaltime}}<br/></b>&nbsp;&nbsp;&nbsp;
+                                                        <h6><b>{{flight.itineraries[0].segments[0].arrival.at | date:'dd/MM/yyyy HH:mm' }}<br/></b>&nbsp;&nbsp;&nbsp;
                                                             
                                                         </h6>
                                                     </div>
@@ -328,6 +410,7 @@
                                                             </div>
                                                             <!-- <p class="airport">Hazrat Shahjalal International Airport
                                                             </p> -->
+                                                            <p class="date" *ngIf="segment.departure.terminal != undefined">Terminal: {{segment.departure.terminal}}</p>
                                                             <p class="date">{{segment.departure.departtime_detail}}</p>
                                                         </div>
                                                     </div>
@@ -341,6 +424,7 @@
                                                                 <span class="code">{{segment.arrival.iataCode}}</span>
                                                                 <span class="time">{{segment.arrival.arrivaltimeonly}}</span>
                                                             </div>
+                                                            <p class="date" *ngIf="segment.arrival.terminal != undefined">Terminal: {{segment.arrival.terminal}}</p>
                                                             <p class="date">{{segment.arrival.arrivaltime_detail}}</p>
                                                         </div>
                                                     </div>
@@ -351,7 +435,7 @@
                                                 <div class="TabPanelInner flex_widht_less">
                                                     <h4>Fare Rules</h4>
                                                     <div *ngFor="let policy of flight.fareRules.rules; index as i">
-                                                        <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} {{policy.maxPenaltyAmount}}</p>
+                                                        <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} NGN {{policy.maxPenaltyAmount}}</p>
 
                                                     </div>
                                                 </div>
@@ -384,12 +468,10 @@
                                                         <p>From</p>
                                                         <h3>{{flight.itineraries[0].segments[0].departure.iataCode}}</h3>
                                                         <!-- <h6>JFK - John F. Kennedy International...</h6> -->
-                                                        <h6><b>{{flight.itineraries[0].segments[0].departure.departtime}}<br/>
+                                                        <h6><b>{{flight.itineraries[0].segments[0].departure.at | date:'dd/MM/yyyy HH:mm'}}<br/>
                                                             {{flight.itineraries[0].segments[0].carrierCode}} {{flight.itineraries[0].segments[0].number}} <br/> 
                                                             {{flight.itineraries[0].segments[0].aircraft.code}}</b>&nbsp;&nbsp;&nbsp;
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                            
                                                         </h6>
                                                     </div>
                                                 </div>
@@ -417,6 +499,13 @@
                                                         </ng-template> -->
                                                         <div class="flight_multi_airport_desc">
                                                             <h6>{{flight.itineraries[0].duration}}</h6>
+                                                            
+                                                            <p>
+                                                                
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span></p>
+                                                            
                                                             <!-- <p>02h 05minute </p> -->
                                                         </div>
                                                     </div>
@@ -424,7 +513,7 @@
                                                         <p>To</p>
                                                         <h3>{{flight.itineraries[0].segments[1].arrival.iataCode}} </h3>
                                                         <!-- <h6>LCY, London city airport </h6> -->
-                                                        <h6><b>{{flight.itineraries[0].segments[1].arrival.arrivaltime}}<br/></b>&nbsp;&nbsp;&nbsp;
+                                                        <h6><b>{{flight.itineraries[0].segments[1].arrival.at | date:'dd/MM/yyyy HH:mm'}}<br/></b>&nbsp;&nbsp;&nbsp;
                                                             
                                                         </h6>
                                                     </div>
@@ -479,7 +568,9 @@
                                                             </div>
                                                             <!-- <p class="airport">Hazrat Shahjalal International Airport
                                                             </p> -->
+                                                            <p class="date" *ngIf="segment.departure.terminal != undefined">Terminal: {{segment.departure.terminal}}</p>
                                                             <p class="date">{{segment.departure.departtime_detail}}</p>
+                                                            
                                                         </div>
                                                     </div>
                                                     <div class="flight_duration">
@@ -494,6 +585,7 @@
                                                             </div>
                                                             <!-- <p class="airport">Hazrat Shahjalal International Airport
                                                             </p> -->
+                                                            <p class="date" *ngIf="segment.arrival.terminal != undefined">Terminal: {{segment.arrival.terminal}}</p>
                                                             <p class="date">{{segment.arrival.arrivaltime_detail}}</p>
                                                         </div>
                                                     </div>
@@ -533,7 +625,7 @@
                                                 <div class="TabPanelInner flex_widht_less">
                                                     <h4>Fare Rules</h4>
                                                     <div *ngFor="let policy of flight.fareRules.rules; index as i">
-                                                        <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} {{policy.maxPenaltyAmount}}</p>
+                                                        <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} NGN {{policy.maxPenaltyAmount}}</p>
 
                                                     </div>
                                                 </div>
@@ -568,12 +660,10 @@
                                                         <p>From</p>
                                                         <h3>{{flight.itineraries[0].segments[0].departure.iataCode}}</h3>
                                                         <!-- <h6>JFK - John F. Kennedy International...</h6> -->
-                                                        <h6><b>{{flight.itineraries[0].segments[0].departure.departtime}}<br/>
+                                                        <h6><b>{{flight.itineraries[0].segments[0].departure.at | date:'dd/MM/yyyy HH:mm'}}<br/>
                                                             {{flight.itineraries[0].segments[0].carrierCode}} {{flight.itineraries[0].segments[0].number}} <br/> 
                                                             {{flight.itineraries[0].segments[0].aircraft.code}}</b>&nbsp;&nbsp;&nbsp;
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                           
                                                         </h6>
                                                     </div>
                                                 </div>
@@ -602,6 +692,11 @@
                                                         </ng-template> -->
                                                         <div class="flight_multi_airport_desc">
                                                             <h6>{{flight.itineraries[0].duration}}</h6>
+                                                            <p>
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                            </p>
                                                             <!-- <p>02h 05minute </p> -->
                                                         </div>
                                                     </div>
@@ -609,7 +704,7 @@
                                                         <p>To</p>
                                                         <h3>{{flight.itineraries[0].segments[1].arrival.iataCode}} </h3>
                                                         <!-- <h6>LCY, London city airport </h6> -->
-                                                        <h6><b>{{flight.itineraries[0].segments[1].arrival.arrivaltime}}<br/></b>&nbsp;&nbsp;&nbsp;
+                                                        <h6><b>{{flight.itineraries[0].segments[1].arrival.at | date:'dd/MM/yyyy HH:mm'}}<br/></b>&nbsp;&nbsp;&nbsp;
                                                             
                                                         </h6>
                                                     </div>
@@ -664,6 +759,7 @@
                                                             </div>
                                                             <!-- <p class="airport">Hazrat Shahjalal International Airport
                                                             </p> -->
+                                                            <p class="date" *ngIf="segment.departure.terminal != undefined">Terminal: {{segment.departure.terminal}}</p>
                                                             <p class="date">{{segment.departure.departtime_detail}}</p>
                                                         </div>
                                                     </div>
@@ -679,6 +775,7 @@
                                                             </div>
                                                             <!-- <p class="airport">Hazrat Shahjalal International Airport
                                                             </p> -->
+                                                            <p class="date" *ngIf="segment.arrival.terminal != undefined">Terminal: {{segment.arrival.terminal}}</p>
                                                             <p class="date">{{segment.arrival.arrivaltime_detail}}</p>
                                                         </div>
                                                     </div>
@@ -718,7 +815,7 @@
                                                 <div class="TabPanelInner flex_widht_less">
                                                     <h4>Fare Rules</h4>
                                                     <div *ngFor="let policy of flight.fareRules.rules; index as i">
-                                                        <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} {{policy.maxPenaltyAmount}}</p>
+                                                        <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} NGN {{policy.maxPenaltyAmount}}</p>
 
                                                     </div>
                                                 </div>
@@ -756,7 +853,7 @@
               <!--Flights Info Round Trip-->
               <div class="col-lg-9" *ngIf="activeTab==2">
                 <div class="row">
-                    <div class="col-12" appAirlinesFilter></div>
+
                     <div class="col-lg-12">
                         <div class="flight_search_result_wrapper">
                              <!-- Flight Search Item -->
@@ -774,26 +871,32 @@
                                                     <div class="flight_search_destination">
                                                         <p>From</p>
                                                         <h3>{{itinery.segments[0].departure.iataCode}}</h3>
-                                                        <h6><b>{{itinery.segments[0].departure.departtime}}<br/>
+                                                        <h6><b>{{itinery.segments[0].departure.at | date:'dd/MM/yyyy HH:mm'}}<br/>
                                                             {{itinery.segments[0].carrierCode}} {{itinery.segments[0].number}} <br/> 
                                                             {{itinery.segments[0].aircraft.code}}</b>&nbsp;&nbsp;&nbsp;
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                            
                                                         </h6>
                                                     </div>
                                                 </div>
                                                 <div class="flight_search_middel">
                                                     <div class="flight_right_arrow">
-                                                        <i class="bi bi-arrow-right"></i>
+                                                        <div class="flight_multi_airport_seperator" >
+                                                            <p class="flight_multi_airport_seperator_line"></p>
+                                                        </div>
                                                         <h6>Non-stop</h6>
                                                         <p>{{itinery.duration}}</p>
+                                                        <p>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                        
+                                                        </p>
                                                         
                                                     </div>
                                                     <div class="flight_search_destination">
                                                         <p>To</p>
                                                         <h3>{{itinery.segments[0].arrival.iataCode}} </h3>
-                                                        <h6><b>{{itinery.segments[0].arrival.arrivaltime}}<br/></b>&nbsp;&nbsp;&nbsp;
+                                                        <h6><b>{{itinery.segments[0].arrival.at | date:'dd/MM/yyyy HH:mm'}}<br/></b>&nbsp;&nbsp;&nbsp;
                                                             
                                                         </h6>
                                                     </div>
@@ -846,7 +949,7 @@
                                                                     <span class="code">{{segment.departure.iataCode}}</span>
                                                                     <span class="time">{{segment.departure.departtimeonly}}</span>
                                                                 </div>
-                                                              
+                                                                <p class="date" *ngIf="segment.departure.terminal != undefined">Terminal: {{segment.departure.terminal}}</p>
                                                                 <p class="date">{{segment.departure.departtime_detail}}</p>
                                                             </div>
                                                         </div>
@@ -860,6 +963,7 @@
                                                                     <span class="code">{{segment.arrival.iataCode}}</span>
                                                                     <span class="time">{{segment.arrival.arrivaltimeonly}}</span>
                                                                 </div>
+                                                                <p class="date" *ngIf="segment.arrival.terminal != undefined">Terminal: {{segment.arrival.terminal}}</p>
                                                                 <p class="date">{{segment.arrival.arrivaltime_detail}}</p>
                                                             </div>
                                                         </div>
@@ -870,7 +974,7 @@
                                                     <div class="TabPanelInner flex_widht_less">
                                                         <h4>Fare Rules</h4>
                                                         <div *ngFor="let policy of flight.fareRules.rules; index as i">
-                                                            <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} {{policy.maxPenaltyAmount}}</p>
+                                                            <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} NGN {{policy.maxPenaltyAmount}}</p>
     
                                                         </div>
                                                     </div>
@@ -906,12 +1010,10 @@
                                                     <div class="flight_search_destination">
                                                         <p>From</p>
                                                         <h3>{{itinery.segments[0].departure.iataCode}}</h3>
-                                                        <h6><b>{{itinery.segments[0].departure.departtime}}<br/>
+                                                        <h6><b>{{itinery.segments[0].departure.at | date:'dd/MM/yyyy HH:mm'}}<br/>
                                                             {{itinery.segments[0].carrierCode}} {{itinery.segments[0].number}} <br/> 
                                                             {{itinery.segments[0].aircraft.code}}</b>&nbsp;&nbsp;&nbsp;
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
-                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                            
                                                         </h6>
                                                     </div>
                                                 </div>
@@ -931,12 +1033,19 @@
                                                         </ng-template>
                                                         <div class="flight_multi_airport_desc">
                                                             <h6>{{itinery.duration}}</h6>
+                                                            <p>
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
+                                                            <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+
+                                                            </p>
+                                                            
                                                         </div>
                                                     </div>
                                                     <div class="flight_search_destination">
                                                         <p>To</p>
                                                         <h3>{{itinery.segments[1].arrival.iataCode}} </h3>
-                                                        <h6><b>{{itinery.segments[1].arrival.arrivaltime}}<br/></b>&nbsp;&nbsp;&nbsp;
+                                                        <h6><b>{{itinery.segments[1].arrival.at | date:'dd/MM/yyyy HH:mm'}}<br/></b>&nbsp;&nbsp;&nbsp;
                                                             
                                                         </h6>
                                                     </div>
@@ -989,6 +1098,7 @@
                                                                     <span class="code">{{segment.departure.iataCode}}</span>
                                                                     <span class="time">{{segment.departure.departtimeonly}}</span>
                                                                 </div>
+                                                                <p class="date" *ngIf="segment.departure.terminal != undefined">Terminal: {{segment.departure.terminal}}</p>
                                                                 <p class="date">{{segment.departure.departtime_detail}}</p>
                                                             </div>
                                                         </div>
@@ -1002,6 +1112,7 @@
                                                                     <span class="code">{{segment.arrival.iataCode}}</span>
                                                                     <span class="time">{{segment.arrival.arrivaltimeonly}}</span>
                                                                 </div>
+                                                                <p class="date" *ngIf="segment.arrival.terminal != undefined">Terminal: {{segment.arrival.terminal}}</p>
                                                                 <p class="date">{{segment.arrival.arrivaltime_detail}}</p>
                                                             </div>
                                                         </div>
@@ -1012,7 +1123,7 @@
                                                     <div class="TabPanelInner flex_widht_less">
                                                         <h4>Fare Rules</h4>
                                                         <div *ngFor="let policy of flight.fareRules.rules; index as i">
-                                                            <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} {{policy.maxPenaltyAmount}}</p>
+                                                            <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} NGN {{policy.maxPenaltyAmount}}</p>
     
                                                         </div>
                                                     </div>
@@ -1049,12 +1160,10 @@
                                                         <div class="flight_search_destination">
                                                             <p>From</p>
                                                             <h3>{{itinery.segments[0].departure.iataCode}}</h3>
-                                                            <h6><b>{{itinery.segments[0].departure.departtime}}<br/>
+                                                            <h6><b>{{itinery.segments[0].departure.at | date:'dd/MM/yyyy HH:mm'}}<br/>
                                                                 {{itinery.segments[0].carrierCode}} {{itinery.segments[0].number}} <br/> 
                                                                 {{itinery.segments[0].aircraft.code}}</b>&nbsp;&nbsp;&nbsp;
-                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
-                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
-                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                               
                                                             </h6>
                                                         </div>
                                                     </div>
@@ -1077,12 +1186,17 @@
                                                             </ng-template>
                                                             <div class="flight_multi_airport_desc">
                                                                 <h6>{{itinery.duration}}</h6>
+                                                                <h6>
+                                                                    <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.quantity != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity}} PC</span>
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined"><i class="bi bi-briefcase"></i> {{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weight}}</span>
+                                                                <span *ngIf="flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags?.weightUnit != undefined">{{flight.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.weightUnit}}</span>
+                                                                </h6>
                                                             </div>
                                                         </div>
                                                         <div class="flight_search_destination">
                                                             <p>To</p>
                                                             <h3>{{itinery.segments[2].arrival.iataCode}} </h3>
-                                                            <h6><b>{{itinery.segments[2].arrival.arrivaltime}}<br/></b>&nbsp;&nbsp;&nbsp;
+                                                            <h6><b>{{itinery.segments[2].arrival.at | date:'dd/MM/yyyy HH:mm'}}<br/></b>&nbsp;&nbsp;&nbsp;
                                                                 
                                                             </h6>
                                                         </div>
@@ -1135,6 +1249,7 @@
                                                                         <span class="code">{{segment.departure.iataCode}}</span>
                                                                         <span class="time">{{segment.departure.departtimeonly}}</span>
                                                                     </div>
+                                                                    <p class="date" *ngIf="segment.departure.terminal != undefined">Terminal: {{segment.departure.terminal}}</p>
                                                                     <p class="date">{{segment.departure.departtime_detail}}</p>
                                                                 </div>
                                                             </div>
@@ -1148,6 +1263,7 @@
                                                                         <span class="code">{{segment.arrival.iataCode}}</span>
                                                                         <span class="time">{{segment.arrival.arrivaltimeonly}}</span>
                                                                     </div>
+                                                                    <p class="date" *ngIf="segment.arrival.terminal != undefined">Terminal: {{segment.arrival.terminal}}</p>
                                                                     <p class="date">{{segment.arrival.arrivaltime_detail}}</p>
                                                                 </div>
                                                             </div>
@@ -1158,7 +1274,7 @@
                                                         <div class="TabPanelInner flex_widht_less">
                                                             <h4>Fare Rules</h4>
                                                             <div *ngFor="let policy of flight.fareRules.rules; index as i">
-                                                                <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} {{policy.maxPenaltyAmount}}</p>
+                                                                <p class="fz12" *ngIf="policy.maxPenaltyAmount != undefined">{{policy.category}} NGN {{policy.maxPenaltyAmount}}</p>
         
                                                             </div>
                                                         </div>
@@ -3540,7 +3656,7 @@
                             </div>
                             <div class="tour_booking_amount_area">
                                 <ul>
-                                    <li>Booking Date <span>{{flightorderResponse.data.associatedRecords[0].formatedcreationDate}}</span></li>
+                                    <li>Booking Date <span>{{flightorderResponse.data.associatedRecords[0].creationDate | date: 'dd/MM/yyyy'}}</span></li>
                                     <li>Booking Reference <span>{{flightorderResponse.data.associatedRecords[0].reference}}</span></li>
                                     <li>Ticket status <span>Pending</span></li>
                                 </ul>

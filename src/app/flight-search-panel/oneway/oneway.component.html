@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-lg-12">
         <div class="oneway_search_form">
@@ -36,6 +37,7 @@
                                     aria-expanded="false">
                                     {{totalPassengerCount}} Passenger
                                 </button>
+                               
                                 <div class="dropdown-menu dropdown_passenger_info"
                                     aria-labelledby="dropdownMenuButton1"> 
                                     <!-- <div class="traveller-calulate-persons" appPassengerSelectionControl (passengerChange)="flight_details.passenger_detail=$event;">
@@ -50,7 +52,7 @@
                         </div>
                     </div>
                     <div class="top_form_search_button">
-                        <button class="btn btn_theme btn_md" (click)="search()">Search</button>
+                        <button class="btn btn_theme btn_md" [disabled]="disableSearch"  [ngClass]="{'disabled': disableSearch}"   (click)="search()">Search</button>
                     </div>
                 </div>
             </form>

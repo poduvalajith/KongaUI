@@ -44,12 +44,15 @@ export class OnewayComponent implements OnInit {
 
   public date_selected:string="";
 
+  public disableSearch=false;
+
   constructor(private service:FlightSearchApiService,private router: Router) { }
 
 
   ngOnInit(): void {
     this.current_date=new Date().toISOString().substr(0, 10);
      this.date_selected=this.current_date;
+     (<HTMLInputElement>document.getElementById('homearea')).scrollIntoView();
   }
 
   setDate(e:any){
@@ -121,7 +124,8 @@ export class OnewayComponent implements OnInit {
   
  public search(){
   
-  console.log(this.fromCity);
+  this.disableSearch=true;
+
   var date_input = (<HTMLInputElement>document.getElementById('journeydate')).value;
   this.departureDateTimeRange.date=date_input;
 
@@ -169,12 +173,13 @@ export class OnewayComponent implements OnInit {
         { //this.resultDataList
           console.log(this.resultDataList);
           this.searchResult.emit(this.resultDataList);
+          (<HTMLInputElement>document.getElementById('explore_area')).scrollIntoView();
         
         }
-        console.log('Success');
+         this.disableSearch=false;
       },
       (error: any) => {
-        console.log('error');
+        this.disableSearch=false;
       });
 }
 
@@ -196,6 +201,7 @@ passengerChange(e: any) {
 cabinChange(e:any){
    if(e != null){
           this.cabinRestriction[0].cabin=e;
+          (<HTMLElement>document.getElementById("dropdownMenuButton1")).click();
    }
 }
 

@@ -11,8 +11,8 @@ import { FlightOrdersRequest } from '../Models/FlightOrdersRequest';
 export class FlightSearchApiService {   
 
 
-  // readonly flightsearchurl = "http://demo.konga.com:3000/";
-  readonly flightsearchurl = "https://localhost:44317/";
+  readonly flightsearchurl = "http://demo.konga.com:3000/";
+  //readonly flightsearchurl = "https://localhost:44318/";
 
   constructor(private http:HttpClient) { }
 
